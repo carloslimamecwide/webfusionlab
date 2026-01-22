@@ -3,12 +3,14 @@
 Exemplo com domínio fictício `meuprojeto.pt` e API em `api.meuprojeto.pt`. Troca pelos teus nomes reais.
 
 ## 1) DNS
+
 - A: `meuprojeto.pt` → IP do VPS
 - A: `www.meuprojeto.pt` → IP do VPS (opcional, recomendado)
 - CNAME: nome:"WWW" `api.meuprojeto.pt` → IP do VPS
 - Testar: `ping meuprojeto.pt` e `ping api.meuprojeto.pt` (devem responder com o IP do VPS)
 
 ## 2) Código no servidor
+
 ```
 cd /opt
 git clone https://github.com/teu-user/teu-repo-novo.git meuprojeto
@@ -21,7 +23,9 @@ cd meuprojeto
 ## 3) Docker com novas portas (ex.: 4000 frontend, 4001 backend)
 
 ### Backend (/opt/meuprojeto/backend)
+
 `docker-compose.prod.yml` exemplo:
+
 ```
 version: "3.8"
 
@@ -74,7 +78,9 @@ networks:
   meuprojeto_net:
     driver: bridge
 ```
+
 Subir e verificar:
+
 ```
 cd /opt/meuprojeto/backend
 docker-compose -f docker-compose.prod.yml up -d --build
@@ -82,7 +88,9 @@ docker ps  # ver 0.0.0.0:4001->4001/tcp
 ```
 
 ### Frontend (/opt/meuprojeto/frontend)
+
 `docker-compose.yml` exemplo:
+
 ```
 version: "3.8"
 
@@ -104,13 +112,17 @@ networks:
   meuprojeto_net:
     driver: bridge
 ```
+
 `.env` do frontend:
+
 ```
 NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://meuprojeto.pt
 NEXT_PUBLIC_API_URL=https://api.meuprojeto.pt
 ```
+
 Subir e verificar:
+
 ```
 cd /opt/meuprojeto/frontend
 docker-compose up -d --build
@@ -122,7 +134,9 @@ curl -I http://127.0.0.1:4001
 ## 4) Nginx (reverse proxy)
 
 ### Site principal (meuprojeto.pt)
+
 `/etc/nginx/sites-available/meuprojeto`
+
 ```
 server {
   listen 80;
@@ -151,13 +165,17 @@ server {
   }
 }
 ```
+
 Ativar:
+
 ```
 sudo ln -s /etc/nginx/sites-available/meuprojeto /etc/nginx/sites-enabled/meuprojeto
 ```
 
 ### API (api.meuprojeto.pt)
+
 `/etc/nginx/sites-available/api-meuprojeto`
+
 ```
 server {
   listen 80;
@@ -186,18 +204,23 @@ server {
   }
 }
 ```
+
 Ativar:
+
 ```
 sudo ln -s /etc/nginx/sites-available/api-meuprojeto /etc/nginx/sites-enabled/api-meuprojeto
 ```
 
 ## 5) Certbot
+
 Se ainda não tens certificados para o domínio:
+
 ```
 sudo certbot --nginx -d meuprojeto.pt -d www.meuprojeto.pt -d api.meuprojeto.pt
 ```
 
 ## 6) Testes
+
 ```
 sudo nginx -t
 sudo systemctl reload nginx
@@ -206,6 +229,7 @@ curl -I https://api.meuprojeto.pt
 ```
 
 ## Modelo mental (checklist rápido)
+
 - DNS: apontar domínio/subdomínios para o IP do VPS
 - Código: /opt/<nome-do-projeto> com frontend + backend
 - Docker: portas únicas (frontend e backend) + nomes de containers/volumes próprios
