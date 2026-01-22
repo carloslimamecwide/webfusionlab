@@ -18,7 +18,7 @@ export const generalLimiter = rateLimit({
  */
 export const emailLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hora
-  max: 5,
+  max: 25,
   message: "Limite de envio de emails excedido. Tente novamente em uma hora.",
   standardHeaders: true,
   legacyHeaders: false,
