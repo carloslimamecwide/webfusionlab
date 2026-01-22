@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { easeOut, motion } from "framer-motion";
 
 const navLinks = [
   { href: "/services", label: "Serviços" },
@@ -14,7 +14,7 @@ export default function LandingNavbar() {
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: easeOut }}
       className="fixed left-0 right-0 top-0 z-30"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,15 +23,15 @@ export default function LandingNavbar() {
             Web<span className="text-[color:var(--accent)]">Fusion</span>Lab
           </Link>
           <div className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-[11px] font-medium uppercase tracking-[0.35em] text-white/60 transition-colors hover:text-white"
-            >
-              {link.label}
-            </Link>
-          ))}
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-[11px] font-medium uppercase tracking-[0.35em] text-white/60 transition-colors hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
           <button
             type="button"

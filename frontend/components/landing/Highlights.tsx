@@ -1,13 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { easeOut, motion } from "framer-motion";
 
 const highlights = [
   {
     title: "Atlas Commerce",
     description: "E-commerce com checkout rapido e conteudo que converte.",
-    image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80",
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80",
     tag: "E-commerce",
     metric: "+38% ticket medio",
     featured: true,
@@ -15,24 +14,21 @@ const highlights = [
   {
     title: "Lume Health",
     description: "Plataforma de saude com onboarding guiado e IA aplicada.",
-    image:
-      "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80",
+    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80",
     tag: "Health",
     metric: "MVP 8 semanas",
   },
   {
     title: "Delta Finance",
     description: "Dashboard financeiro com dados em tempo real e alertas.",
-    image:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
     tag: "SaaS",
     metric: "+24 NPS",
   },
   {
     title: "Vento Mobility",
     description: "App + landing para lancamento de servicos urbanos.",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
     tag: "Mobility",
     metric: "Launch 21 dias",
   },
@@ -61,7 +57,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 22, scale: 0.98 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut" } },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: easeOut } },
 };
 
 export default function Highlights() {
@@ -78,7 +74,7 @@ export default function Highlights() {
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: easeOut }}
             className="space-y-6"
           >
             <div className="text-[10px] uppercase tracking-[0.4em] text-[color:var(--accent)]">Projetos em foco</div>

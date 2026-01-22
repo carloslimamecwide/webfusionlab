@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { easeInOut, easeOut, motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 
 const heroStats = [
@@ -22,7 +22,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: easeOut } },
 };
 
 export default function Hero() {
@@ -32,12 +32,12 @@ export default function Hero() {
         <motion.div
           className="absolute -top-28 right-10 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,255,63,0.35),transparent_65%)] blur-3xl"
           animate={{ y: [0, 18, 0], opacity: [0.8, 1, 0.8] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 8, repeat: Infinity, ease: easeInOut }}
         />
         <motion.div
           className="absolute left-0 top-32 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.18),transparent_65%)] blur-3xl"
           animate={{ y: [0, -20, 0], opacity: [0.7, 1, 0.7] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 10, repeat: Infinity, ease: easeInOut }}
         />
         <div className="absolute left-0 top-32 h-px w-[70%] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         <div className="absolute -bottom-16 right-16 h-64 w-64 rounded-full border border-white/10" />
@@ -117,7 +117,7 @@ export default function Hero() {
           <motion.span
             className="h-px w-12 bg-white/30"
             animate={{ scaleX: [0.4, 1, 0.4] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: easeInOut }}
           />
         </motion.div>
       </div>
