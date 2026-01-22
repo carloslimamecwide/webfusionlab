@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050505;
+  --foreground: #f3f3f3;
+  --muted: #9a9a9a;
+  --accent: #d6ff3f;
+  --accent-strong: #bff029;
+  --accent-soft: rgba(214, 255, 63, 0.18);
+  --surface: rgba(255, 255, 255, 0.02);
+  --surface-muted: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), "Arial Narrow", "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
+  position: relative;
+  background-image: radial-gradient(circle at 15% 10%, rgba(214, 255, 63, 0.12), transparent 45%),
+    radial-gradient(circle at 85% 0%, rgba(255, 255, 255, 0.08), transparent 35%),
+    linear-gradient(180deg, rgba(8, 8, 8, 0.8), transparent 45%, rgba(4, 4, 4, 0.9) 100%);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 0.5px, transparent 0.5px);
+  background-size: 18px 18px;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(3, 3, 3, 0.9) 0%, transparent 40%, transparent 70%, rgba(3, 3, 3, 0.9) 100%);
+  z-index: 0;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display), "Times New Roman", serif;
+  letter-spacing: -0.03em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
