@@ -6,6 +6,11 @@ import { services } from "@/data/services";
 
 const capabilities = services.slice(0, 4);
 const focusAreas = ["Estrategia", "Design", "Engenharia", "Growth"];
+const processSteps = [
+  { step: "01", title: "Imersao", detail: "Diagnostico, dados e mapa de risco." },
+  { step: "02", title: "Blueprint", detail: "Fluxos, prototipo e backlog claro." },
+  { step: "03", title: "Entrega", detail: "Build, QA e launch com growth." },
+];
 
 const containerVariants = {
   hidden: {},
@@ -81,12 +86,14 @@ export default function Capabilities() {
             viewport={{ once: true, amount: 0.3 }}
             className="grid gap-4 md:grid-cols-2"
           >
-            {capabilities.map((service) => (
+            {capabilities.map((service, index) => (
               <motion.article
                 key={service.id}
                 variants={itemVariants}
                 whileHover={{ y: -6 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/30"
+                className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/30 ${
+                  index % 2 === 1 ? "md:translate-y-4" : ""
+                }`}
               >
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent opacity-70" />
                 <div className="relative space-y-4">
@@ -108,6 +115,26 @@ export default function Capabilities() {
             ))}
           </motion.div>
         </div>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          className="mt-12 grid gap-4 md:grid-cols-3"
+        >
+          {processSteps.map((step) => (
+            <motion.div
+              key={step.step}
+              variants={itemVariants}
+              className="rounded-2xl border border-white/10 bg-white/[0.02] p-5"
+            >
+              <div className="text-[10px] uppercase tracking-[0.35em] text-white/40">{`Step ${step.step}`}</div>
+              <div className="mt-3 text-lg uppercase tracking-tight text-white">{step.title}</div>
+              <p className="mt-2 text-sm text-white/60">{step.detail}</p>
+            </motion.div>
+          ))}
+        </motion.div>
 
         <motion.div
           variants={containerVariants}

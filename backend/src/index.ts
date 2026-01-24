@@ -19,13 +19,18 @@ const isDev = process.env.NODE_ENV === "development";
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: isDev ? ["http://localhost:3000", "http://localhost:3001"] : ["https://webfusionlab.pt"],
+    credentials: true,
+  }),
+);
 app.use(generalLimiter);
 
 // Swagger - apenas em desenvolvimento
 if (isDev) {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  console.log("📚 Swagger disponível em http://localhost:3000/api-docs");
+  console.log(`📚 Swagger disponível em http://localhost:${port}/api-docs`);
 }
 
 // Rotas
