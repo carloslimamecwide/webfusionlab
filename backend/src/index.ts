@@ -21,7 +21,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: isDev ? ["http://localhost:3000", "http://localhost:3001"] : ["https://webfusionlab.pt"],
+    origin: isDev
+      ? ["http://localhost:3000", "http://localhost:3001"]
+      : ["https://webfusionlab.pt", "https://www.webfusionlab.pt"],
     credentials: true,
   }),
 );
