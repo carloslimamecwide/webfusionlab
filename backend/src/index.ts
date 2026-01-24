@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: isDev
       ? ["http://localhost:3000", "http://localhost:3001"]
-      : ["https://webfusionlab.pt", "https://www.webfusionlab.pt"],
+      : ["https://webfusionlab.pt", "https://www.webfusionlab.pt", "https://api.webfusionlab.pt"],
     credentials: true,
   }),
 );
