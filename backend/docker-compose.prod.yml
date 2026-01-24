@@ -47,6 +47,8 @@ services:
     restart: always
     networks:
       - webfusionlab
+    ports:
+      - "3001:3001"
 
 volumes:
   postgres_data:
