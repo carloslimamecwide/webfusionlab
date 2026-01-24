@@ -7,7 +7,10 @@ export async function initializeDatabase(): Promise<void> {
     console.log("🔄 Inicializando banco de dados...");
 
     // Ler e executar migrations
-    const migrationPath = path.join(__dirname, "../migrations/001_init.sql");
+    const migrationPath =
+      process.env.NODE_ENV === "production"
+        ? path.resolve(process.cwd(), "migrations/001_init.sql")
+        : path.join(__dirname, "../migrations/001_init.sql");
     const migrationSQL = fs.readFileSync(migrationPath, "utf8");
 
     // Executar todo o SQL de uma vez (pois contém funções e triggers)
@@ -37,7 +40,7 @@ export async function seedInitialAdmin(): Promise<void> {
     await query(
       `INSERT INTO admins (email, password, name) 
        VALUES ($1, $2, $3)`,
-      ["admin@webfusionlab.pt", password, "Admin"]
+      ["admin@webfusionlab.pt", password, "Admin"],
     );
 
     console.log("✅ Admin padrão criado!");
