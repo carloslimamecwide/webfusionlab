@@ -22,6 +22,7 @@ RUN adduser -S nodejs -u 1001
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
+COPY migrations ./migrations
 
 USER nodejs
 

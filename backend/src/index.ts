@@ -13,6 +13,7 @@ import emailService from "./services/emailService";
 import { initializeDatabase, seedInitialAdmin } from "./config/initDb";
 
 const app: Express = express();
+app.set('trust proxy', 1);
 const port = process.env.PORT || 3000;
 const isDev = process.env.NODE_ENV === "development";
 
