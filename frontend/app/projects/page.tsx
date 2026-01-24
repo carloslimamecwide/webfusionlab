@@ -3,12 +3,25 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import AnimatedSection from "@/components/sections/AnimatedSection";
+import PageHero from "@/components/sections/PageHero";
 import ProjectCard from "@/components/sections/ProjectCard";
-import Badge from "@/components/ui/Badge";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { projects, categories } from "@/data/projects";
+
+const heroStats = [
+  { label: "Projetos", value: "38", note: "2019-2024" },
+  { label: "Categorias", value: "06", note: "Web + Mobile" },
+  { label: "Impacto", value: "+27% retencao", note: "Media clientes" },
+];
+
+const caseMix = [
+  { label: "SaaS", value: "14" },
+  { label: "E-commerce", value: "09" },
+  { label: "Health", value: "06" },
+  { label: "Fintech", value: "04" },
+];
 
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState("Todos");
@@ -18,55 +31,83 @@ export default function ProjectsPage() {
 
   return (
     <div className="relative">
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto text-center"
-        >
-          <Badge variant="subtle" className="mb-6">
-            Projetos
-          </Badge>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-6 tracking-tight leading-[1] text-balance uppercase">
-            Trabalho real, resultados claros.
-          </h1>
-          <p className="text-base md:text-lg text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed text-balance">
-            Seleciona uma categoria e vê como resolvemos desafios em web, mobile, marketing e AI.
-          </p>
-        </motion.div>
+      <PageHero
+        eyebrow="Projetos"
+        title={
+          <>
+            Trabalho real,
+            <span className="block text-[color:var(--accent)]">resultados claros.</span>
+          </>
+        }
+        description="Seleciona uma categoria e ve como resolvemos desafios em web, mobile, marketing e AI."
+        meta={["Portfolio vivo", "Portugal + EU", "2019-2024"]}
+        tags={["SaaS", "E-commerce", "Health", "Fintech"]}
+        stats={heroStats}
+        right={
+          <>
+            <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+                <span>Case mix</span>
+                <span className="text-[color:var(--accent)]">Live</span>
+              </div>
+              <div className="mt-6 space-y-3">
+                {caseMix.map((item) => (
+                  <div key={item.label} className="flex items-center justify-between text-sm">
+                    <span className="text-white/60">{item.label}</span>
+                    <span className="text-lg uppercase tracking-tight text-white">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
+              <div className="text-[10px] uppercase tracking-[0.4em] text-white/50">Selecao</div>
+              <div className="mt-3 text-2xl uppercase tracking-tight text-white">Casos com pressao real</div>
+              <p className="mt-2 text-sm text-white/60">Projetos de crescimento, produto e rebrand.</p>
+            </div>
+          </>
+        }
+      />
+
+      <section className="relative pb-12">
+        <div className="mx-auto max-w-6xl px-6 lg:px-10">
+          <SectionHeading
+            align="left"
+            eyebrow="Filtro"
+            title="Explora por categoria."
+            subtitle="Agrupamos por tipo de produto para facilitar a leitura."
+            className="mb-8"
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-wrap gap-3"
+          >
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                type="button"
+                aria-pressed={activeCategory === category}
+                className={`
+                  px-5 py-2 rounded-full text-[11px] font-medium uppercase tracking-[0.3em] transition-all duration-300 border
+                  ${
+                    activeCategory === category
+                      ? "bg-[color:var(--accent)] text-black border-transparent"
+                      : "bg-transparent text-white/60 hover:text-white border-white/20"
+                  }
+                `}
+              >
+                {category}
+              </button>
+            ))}
+          </motion.div>
+        </div>
       </section>
 
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-3"
-        >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              type="button"
-              aria-pressed={activeCategory === category}
-              className={`
-                px-5 py-2 rounded-full text-[11px] font-medium uppercase tracking-[0.3em] transition-all duration-300 border
-                ${
-                  activeCategory === category
-                    ? "bg-[color:var(--accent)] text-black border-transparent"
-                    : "bg-transparent text-white/60 hover:text-white border-white/20"
-                }
-              `}
-            >
-              {category}
-            </button>
-          ))}
-        </motion.div>
-      </section>
-
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+      <section className="relative pb-20">
+        <div className="mx-auto max-w-6xl px-6 lg:px-10">
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project, index) => (
             <motion.div
               key={project.id}
@@ -79,27 +120,30 @@ export default function ProjectsPage() {
               <ProjectCard project={project} showYear />
             </motion.div>
           ))}
-        </motion.div>
-
-        {filteredProjects.length === 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
-            <p className="text-white/60">Nenhum projeto encontrado nesta categoria.</p>
           </motion.div>
-        )}
+
+          {filteredProjects.length === 0 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
+              <p className="text-white/60">Nenhum projeto encontrado nesta categoria.</p>
+            </motion.div>
+          )}
+        </div>
       </section>
 
-      <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <Card className="max-w-4xl mx-auto bg-white/[0.03] text-center">
-          <SectionHeading
-            title="Queres um projeto semelhante?"
-            subtitle="Partilha o teu objetivo e respondemos com uma proposta clara."
-            size="md"
-            className="mb-8"
-          />
-          <Button href="/contact" variant="primary">
-            Contactar
-          </Button>
-        </Card>
+      <AnimatedSection className="relative py-20">
+        <div className="mx-auto max-w-4xl px-6 lg:px-10">
+          <Card className="bg-white/[0.03] text-center">
+            <SectionHeading
+              title="Queres um projeto semelhante?"
+              subtitle="Partilha o teu objetivo e respondemos com uma proposta clara."
+              size="md"
+              className="mb-8"
+            />
+            <Button href="/contact" variant="primary">
+              Contactar
+            </Button>
+          </Card>
+        </div>
       </AnimatedSection>
     </div>
   );

@@ -1,49 +1,128 @@
 "use client";
 
 import { easeOut, motion } from "framer-motion";
-import Badge from "@/components/ui/Badge";
+import PageHero from "@/components/sections/PageHero";
+import SectionHeading from "@/components/ui/SectionHeading";
 import Card from "@/components/ui/Card";
 
 const people = [
   {
     name: "Carlos Lima",
     role: "Desenvolvedor",
-    bio: "Engenharia de produto com foco em performance, arquitetura e experiências digitais que escalam.",
+    bio: "Engenharia de produto com foco em performance, arquitetura e experiencias digitais que escalam.",
     image: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=900&q=80",
   },
   {
     name: "Mariana Alves",
     role: "Marketing & Growth",
-    bio: "Estratégia, narrativa e execução para posicionar marcas e acelerar aquisição com clareza.",
+    bio: "Estrategia, narrativa e execucao para posicionar marcas e acelerar aquisicao com clareza.",
     image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+  },
+];
+
+const heroStats = [
+  { label: "Fundado", value: "2019", note: "Lisboa + Porto" },
+  { label: "Projetos", value: "38", note: "Web, SaaS, Mobile" },
+  { label: "Regioes", value: "EU + LATAM", note: "Remote first" },
+];
+
+const studioSignals = [
+  { label: "Foco", value: "Produto + Growth" },
+  { label: "Ritmo", value: "Sprints quinzenais" },
+  { label: "Entrega", value: "QA + Launch" },
+];
+
+const principles = [
+  {
+    title: "Clareza radical",
+    description: "Backlog curto, prioridades fechadas e comunicacao direta.",
+  },
+  {
+    title: "Velocidade com cuidado",
+    description: "Teste, revisao e entrega sem atalhos.",
+  },
+  {
+    title: "Impacto mensuravel",
+    description: "Cada sprint precisa de um resultado verificavel.",
   },
 ];
 
 export default function AboutPage() {
   return (
     <div className="relative">
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto text-center"
-        >
-          <Badge variant="subtle" className="mb-6">
-            Sobre
-          </Badge>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-6 tracking-tight leading-[1] text-balance uppercase">
-            Uma equipa pequena, com foco absoluto em impacto.
-          </h1>
-          <p className="text-base md:text-lg text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed text-balance">
-            Desenvolvimento e marketing trabalham juntos desde o primeiro dia para criar experiências consistentes,
-            rápidas e orientadas ao negócio.
-          </p>
-        </motion.div>
+      <PageHero
+        eyebrow="Sobre"
+        title={
+          <>
+            Uma equipa pequena,
+            <span className="block text-[color:var(--accent)]">com foco absoluto em impacto.</span>
+          </>
+        }
+        description="Desenvolvimento e marketing trabalham juntos desde o primeiro dia para criar experiencias consistentes, rapidas e orientadas ao negocio."
+        meta={["Studio boutique", "Portugal", "Remote"]}
+        tags={["Produto", "Growth", "Design", "Engenharia"]}
+        stats={heroStats}
+        right={
+          <>
+            <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+                <span>Studio DNA</span>
+                <span className="text-[color:var(--accent)]">Live</span>
+              </div>
+              <div className="mt-5 space-y-4">
+                {studioSignals.map((item) => (
+                  <div key={item.label} className="flex items-center justify-between text-sm">
+                    <span className="text-white/60">{item.label}</span>
+                    <span className="text-lg uppercase tracking-tight text-white">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
+              <div className="text-[10px] uppercase tracking-[0.4em] text-white/50">Metodo</div>
+              <div className="mt-3 text-2xl uppercase tracking-tight text-white">Diagnostico + entrega</div>
+              <p className="mt-3 text-sm text-white/60">Roadmap claro e execucao rapida em squads.</p>
+            </div>
+          </>
+        }
+      />
+
+      <section className="relative py-20">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-10 top-10 h-28 w-28 rounded-full border border-white/10" />
+          <div className="absolute right-12 bottom-10 h-36 w-36 rounded-full border border-white/10" />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-6 lg:px-10">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)] lg:items-start">
+            <SectionHeading
+              align="left"
+              eyebrow="Manifesto"
+              title="Princípios que guiam cada sprint."
+              subtitle="Trabalhamos com foco, transparência e entregas que realmente mudam o negocio."
+            />
+            <div className="space-y-4">
+              {principles.map((item) => (
+                <div key={item.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+                  <div className="text-[10px] uppercase tracking-[0.35em] text-white/40">Principio</div>
+                  <div className="mt-3 text-lg uppercase tracking-tight text-white">{item.title}</div>
+                  <p className="mt-2 text-sm text-white/60">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
+      <section className="relative pb-24">
+        <div className="relative mx-auto max-w-6xl px-6 lg:px-10">
+          <SectionHeading
+            align="left"
+            eyebrow="Equipa"
+            title="Gente senior, alinhada e direta."
+            subtitle="Poucas pessoas, muitas entregas. Trabalhamos lado a lado com o teu time."
+            className="mb-10"
+          />
+          <div className="grid gap-8 md:grid-cols-2">
           {people.map((person, index) => (
             <motion.div
               key={person.name}
@@ -63,6 +142,7 @@ export default function AboutPage() {
               </Card>
             </motion.div>
           ))}
+          </div>
         </div>
       </section>
     </div>
