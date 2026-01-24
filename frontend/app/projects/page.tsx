@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import AnimatedSection from "@/components/sections/AnimatedSection";
 import PageHero from "@/components/sections/PageHero";
@@ -8,13 +8,24 @@ import ProjectCard from "@/components/sections/ProjectCard";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { projects, categories } from "@/data/projects";
 
-const heroStats = [
-  { label: "Projetos", value: "38", note: "2019-2024" },
-  { label: "Categorias", value: "06", note: "Web + Mobile" },
-  { label: "Impacto", value: "+27% retencao", note: "Media clientes" },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
+const categories = ["Todos", "Web", "Mobile", "Marketing", "AI"];
+
+type Category = "Web" | "Mobile" | "Marketing" | "AI";
+
+interface ProjectRecord {
+  id: string;
+  title: string;
+  description: string;
+  category: Category;
+  year: string;
+  stack: string[];
+  image?: string | null;
+  link?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
 
 const caseMix = [
   { label: "SaaS", value: "14" },
@@ -25,9 +36,58 @@ const caseMix = [
 
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState("Todos");
+  const [projects, setProjects] = useState<ProjectRecord[]>([]);
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
 
-  const filteredProjects =
-    activeCategory === "Todos" ? projects : projects.filter((project) => project.category === activeCategory);
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProjects = async () => {
+      if (!API_URL) {
+        setStatus("error");
+        return;
+      }
+      setStatus("loading");
+      try {
+        const response = await fetch(`${API_URL}/api/public/projects`);
+        if (!response.ok) {
+          throw new Error("Erro ao carregar projetos.");
+        }
+        const data = (await response.json()) as ProjectRecord[];
+        if (!isMounted) {
+          return;
+        }
+        setProjects(data);
+        setStatus("idle");
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
+        setStatus("error");
+      }
+    };
+
+    void fetchProjects();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === "Todos") {
+      return projects;
+    }
+    return projects.filter((project) => project.category === activeCategory);
+  }, [activeCategory, projects]);
+
+  const heroStats = useMemo(() => {
+    return [
+      { label: "Projetos", value: `${projects.length}`, note: "2019-2024" },
+      { label: "Categorias", value: `${categories.length - 1}`, note: "Web + Mobile" },
+      { label: "Impacto", value: "+27% retencao", note: "Media clientes" },
+    ];
+  }, [projects.length]);
 
   return (
     <div className="relative">
@@ -107,26 +167,36 @@ export default function ProjectsPage() {
 
       <section className="relative pb-20">
         <div className="mx-auto max-w-6xl px-6 lg:px-10">
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-            >
-              <ProjectCard project={project} showYear />
-            </motion.div>
-          ))}
+          {status === "loading" ? (
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-sm text-white/60">
+              A carregar projetos...
+            </div>
+          ) : null}
+          {status === "error" ? (
+            <div className="rounded-2xl border border-red-400/40 bg-red-500/15 p-6 text-sm text-red-200">
+              Nao foi possivel carregar os projetos. Confirma `NEXT_PUBLIC_API_URL`.
+            </div>
+          ) : null}
+          <motion.div layout className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <ProjectCard project={project} showYear />
+              </motion.div>
+            ))}
           </motion.div>
 
-          {filteredProjects.length === 0 && (
+          {status === "idle" && filteredProjects.length === 0 ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
               <p className="text-white/60">Nenhum projeto encontrado nesta categoria.</p>
             </motion.div>
-          )}
+          ) : null}
         </div>
       </section>
 

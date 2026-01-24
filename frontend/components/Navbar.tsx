@@ -29,7 +29,7 @@ export default function Navbar() {
     <nav
       className={`
         fixed top-0 w-full z-50 transition-all duration-300
-        ${isScrolled ? "bg-black/70 backdrop-blur-xl" : "bg-transparent"}
+        ${isScrolled || isMobileMenuOpen ? "bg-black/80 backdrop-blur-xl" : "bg-transparent"}
       `}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,7 +79,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-white/10 space-y-3">
+          <div className="md:hidden border-t border-white/10 bg-black/90 px-2 py-4 backdrop-blur-xl space-y-3">
             {navLinks.map((link) => (
               <Link
                 key={link.href}

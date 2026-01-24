@@ -20,7 +20,7 @@ export async function createAdmin(email: string, password: string, name: string)
       `INSERT INTO admins (email, password, name) 
        VALUES ($1, $2, $3) 
        RETURNING id, email, name, is_active, created_at, updated_at`,
-      [email, hashedPassword, name]
+      [email, hashedPassword, name],
     );
 
     return result.rows[0];
@@ -32,6 +32,58 @@ export async function createAdmin(email: string, password: string, name: string)
 
 export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword);
+}
+
+export async function getAdminById(id: string): Promise<Admin | null> {
+  try {
+    const result = await query("SELECT * FROM admins WHERE id = $1", [id]);
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error("Erro ao buscar admin por ID:", error);
+    return null;
+  }
+}
+
+export async function updateAdminCredentials(
+  adminId: string,
+  email?: string,
+  password?: string,
+): Promise<Admin | null> {
+  try {
+    const updates: string[] = [];
+    const values: any[] = [];
+    let paramCount = 1;
+
+    if (email) {
+      updates.push(`email = $${paramCount++}`);
+      values.push(email);
+    }
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updates.push(`password = $${paramCount++}`);
+      values.push(hashedPassword);
+    }
+
+    if (updates.length === 0) {
+      return getAdminById(adminId);
+    }
+
+    values.push(adminId);
+
+    const queryStr = `
+      UPDATE admins
+      SET ${updates.join(", ")}, updated_at = NOW()
+      WHERE id = $${paramCount}
+      RETURNING id, email, name, is_active, created_at, updated_at
+    `;
+
+    const result = await query(queryStr, values);
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error("Erro ao atualizar credenciais do admin:", error);
+    return null;
+  }
 }
 
 export async function createProject(adminId: string, projectData: ProjectInput): Promise<Project | null> {
@@ -49,7 +101,7 @@ export async function createProject(adminId: string, projectData: ProjectInput):
         projectData.stack,
         projectData.image,
         projectData.link,
-      ]
+      ],
     );
 
     return result.rows[0];
@@ -92,7 +144,7 @@ export async function getProjectById(id: string, adminId: string): Promise<Proje
 export async function updateProject(
   id: string,
   adminId: string,
-  projectData: Partial<ProjectInput>
+  projectData: Partial<ProjectInput>,
 ): Promise<Project | null> {
   try {
     // Construir UPDATE dinamicamente

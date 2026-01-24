@@ -22,6 +22,15 @@ const options = {
         description: "Servidor de produção",
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./src/routes/contact.ts", "./src/routes/admin.ts", "./src/routes/public.ts"],
 };
