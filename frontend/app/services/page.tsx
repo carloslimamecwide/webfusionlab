@@ -73,30 +73,34 @@ export default function ServicesPage() {
         ]}
         right={
           <>
-            <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
                 <span>Pacotes</span>
                 <span className="text-[color:var(--accent)]">Live</span>
               </div>
               <div className="mt-6 space-y-4 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-white/60">Sprint 1</span>
-                  <span className="text-white">Descoberta + UX</span>
+                  <span className="text-[color:var(--muted)]">Sprint 1</span>
+                  <span className="text-[color:var(--foreground)]">Descoberta + UX</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-white/60">Sprint 2</span>
-                  <span className="text-white">UI + Prototype</span>
+                  <span className="text-[color:var(--muted)]">Sprint 2</span>
+                  <span className="text-[color:var(--foreground)]">UI + Prototype</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-white/60">Sprints 3+</span>
-                  <span className="text-white">Build + Growth</span>
+                  <span className="text-[color:var(--muted)]">Sprints 3+</span>
+                  <span className="text-[color:var(--foreground)]">Build + Growth</span>
                 </div>
               </div>
             </div>
-            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
-              <div className="text-[10px] uppercase tracking-[0.4em] text-white/50">Stack</div>
-              <div className="mt-3 text-2xl uppercase tracking-tight text-white">Moderna, sem hype</div>
-              <p className="mt-2 text-sm text-white/60">Ferramentas escolhidas pela velocidade e escala.</p>
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Stack</div>
+              <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                Moderna, sem hype
+              </div>
+              <p className="mt-2 text-sm text-[color:var(--muted)]">
+                Ferramentas escolhidas pela velocidade e escala.
+              </p>
             </div>
           </>
         }
@@ -112,11 +116,11 @@ export default function ServicesPage() {
             className="mb-12"
           />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {services.map((service, index) => (
-            <AnimatedSection key={service.id} delay={index * 0.08}>
-              <ServiceCard service={service} showFeatures />
-            </AnimatedSection>
-          ))}
+            {services.map((service, index) => (
+              <AnimatedSection key={service.id} delay={index * 0.08}>
+                <ServiceCard service={service} showFeatures />
+              </AnimatedSection>
+            ))}
           </div>
         </div>
       </section>
@@ -142,7 +146,7 @@ export default function ServicesPage() {
 
       <AnimatedSection className="relative py-20">
         <div className="mx-auto max-w-5xl px-6 lg:px-10">
-          <Card className="bg-white/[0.03]">
+          <Card className="bg-[color:var(--surface)]">
             <SectionHeading
               align="left"
               eyebrow="Stack"
@@ -164,9 +168,9 @@ export default function ServicesPage() {
 
       <AnimatedSection className="relative py-20">
         <div className="mx-auto max-w-4xl px-6 lg:px-10">
-          <Card className="bg-white/[0.03] text-center">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-4 uppercase">Vamos falar do teu projeto?</h2>
-            <p className="text-white/60 mb-8 max-w-2xl mx-auto">
+          <Card className="bg-[color:var(--surface)] text-center">
+            <h2 className="text-3xl md:text-4xl font-semibold mb-4">Vamos falar do teu projeto?</h2>
+            <p className="text-[color:var(--muted)] mb-8 max-w-2xl mx-auto">
               Diz-nos o que precisas e respondemos com um plano simples e transparente.
             </p>
             <Button href="/contact" variant="primary">

@@ -29,13 +29,13 @@ export default function Navbar() {
     <nav
       className={`
         fixed top-0 w-full z-50 transition-all duration-300
-        ${isScrolled || isMobileMenuOpen ? "bg-black/80 backdrop-blur-xl" : "bg-transparent"}
+        ${isScrolled || isMobileMenuOpen ? "bg-black/70 backdrop-blur-xl border-b border-white/5" : "bg-transparent"}
       `}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="text-sm uppercase tracking-[0.4em] text-white">
+          <Link href="/" className="text-sm font-semibold tracking-[0.12em] text-[color:var(--foreground)]">
             Web<span className="text-[color:var(--accent)]">Fusion</span>Lab
           </Link>
 
@@ -45,8 +45,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-[11px] font-medium uppercase tracking-[0.35em] transition-colors duration-200 ${
-                  pathname === link.href ? "text-[color:var(--accent)]" : "text-white/60 hover:text-white"
+                className={`text-sm font-medium tracking-[0.08em] transition-colors duration-200 ${
+                  pathname === link.href
+                    ? "text-[color:var(--accent)]"
+                    : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
                 }`}
               >
                 {link.label}
@@ -59,7 +61,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-white p-2"
+            className="md:hidden text-[color:var(--foreground)] p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -84,8 +86,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block py-3 text-[11px] font-medium uppercase tracking-[0.35em] transition-colors ${
-                  pathname === link.href ? "text-[color:var(--accent)]" : "text-white/60 hover:text-white"
+                className={`block py-3 text-sm font-medium tracking-[0.08em] transition-colors ${
+                  pathname === link.href
+                    ? "text-[color:var(--accent)]"
+                    : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >

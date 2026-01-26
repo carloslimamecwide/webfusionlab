@@ -5,7 +5,7 @@ import Testimonials from "@/components/landing/Testimonials";
 
 export default function Home() {
   return (
-    <div className="relative text-white">
+    <div className="relative">
       <main>
         <Hero />
         <Highlights />

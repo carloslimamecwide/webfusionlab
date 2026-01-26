@@ -64,24 +64,28 @@ export default function AboutPage() {
         stats={heroStats}
         right={
           <>
-            <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
                 <span>Studio DNA</span>
                 <span className="text-[color:var(--accent)]">Live</span>
               </div>
               <div className="mt-5 space-y-4">
                 {studioSignals.map((item) => (
                   <div key={item.label} className="flex items-center justify-between text-sm">
-                    <span className="text-white/60">{item.label}</span>
-                    <span className="text-lg uppercase tracking-tight text-white">{item.value}</span>
+                    <span className="text-[color:var(--muted)]">{item.label}</span>
+                    <span className="text-lg font-medium tracking-tight text-[color:var(--foreground)]">
+                      {item.value}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
-              <div className="text-[10px] uppercase tracking-[0.4em] text-white/50">Metodo</div>
-              <div className="mt-3 text-2xl uppercase tracking-tight text-white">Diagnostico + entrega</div>
-              <p className="mt-3 text-sm text-white/60">Roadmap claro e execucao rapida em squads.</p>
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Metodo</div>
+              <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                Diagnostico + entrega
+              </div>
+              <p className="mt-3 text-sm text-[color:var(--muted)]">Roadmap claro e execucao rapida em squads.</p>
             </div>
           </>
         }
@@ -102,10 +106,10 @@ export default function AboutPage() {
             />
             <div className="space-y-4">
               {principles.map((item) => (
-                <div key={item.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-                  <div className="text-[10px] uppercase tracking-[0.35em] text-white/40">Principio</div>
-                  <div className="mt-3 text-lg uppercase tracking-tight text-white">{item.title}</div>
-                  <p className="mt-2 text-sm text-white/60">{item.description}</p>
+                  <div key={item.title} className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5">
+                  <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]">Principio</div>
+                  <div className="mt-3 text-lg font-semibold tracking-tight text-[color:var(--foreground)]">{item.title}</div>
+                  <p className="mt-2 text-sm text-[color:var(--muted)]">{item.description}</p>
                 </div>
               ))}
             </div>
@@ -136,9 +140,9 @@ export default function AboutPage() {
                   <img src={person.image} alt={person.name} className="h-72 w-full object-cover" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 </div>
-                <div className="text-[10px] uppercase tracking-[0.35em] text-[color:var(--accent)]">{person.role}</div>
-                <h2 className="mt-3 text-2xl font-semibold tracking-tight uppercase">{person.name}</h2>
-                <p className="mt-4 text-sm text-white/60 leading-relaxed">{person.bio}</p>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--accent)]">{person.role}</div>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight">{person.name}</h2>
+                <p className="mt-4 text-sm text-[color:var(--muted)] leading-relaxed">{person.bio}</p>
               </Card>
             </motion.div>
           ))}

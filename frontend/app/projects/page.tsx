@@ -105,24 +105,26 @@ export default function ProjectsPage() {
         stats={heroStats}
         right={
           <>
-            <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
                 <span>Case mix</span>
                 <span className="text-[color:var(--accent)]">Live</span>
               </div>
               <div className="mt-6 space-y-3">
                 {caseMix.map((item) => (
                   <div key={item.label} className="flex items-center justify-between text-sm">
-                    <span className="text-white/60">{item.label}</span>
-                    <span className="text-lg uppercase tracking-tight text-white">{item.value}</span>
+                    <span className="text-[color:var(--muted)]">{item.label}</span>
+                    <span className="text-lg font-medium tracking-tight text-[color:var(--foreground)]">{item.value}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
-              <div className="text-[10px] uppercase tracking-[0.4em] text-white/50">Selecao</div>
-              <div className="mt-3 text-2xl uppercase tracking-tight text-white">Casos com pressao real</div>
-              <p className="mt-2 text-sm text-white/60">Projetos de crescimento, produto e rebrand.</p>
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Selecao</div>
+              <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                Casos com pressao real
+              </div>
+              <p className="mt-2 text-sm text-[color:var(--muted)]">Projetos de crescimento, produto e rebrand.</p>
             </div>
           </>
         }
@@ -150,11 +152,11 @@ export default function ProjectsPage() {
                 type="button"
                 aria-pressed={activeCategory === category}
                 className={`
-                  px-5 py-2 rounded-full text-[11px] font-medium uppercase tracking-[0.3em] transition-all duration-300 border
+                  px-5 py-2 rounded-full text-sm font-medium tracking-[0.12em] transition-all duration-300 border
                   ${
                     activeCategory === category
-                      ? "bg-[color:var(--accent)] text-black border-transparent"
-                      : "bg-transparent text-white/60 hover:text-white border-white/20"
+                      ? "bg-[color:var(--accent)] text-[color:var(--background)] border-transparent"
+                      : "bg-transparent text-[color:var(--muted)] hover:text-[color:var(--foreground)] border-[color:var(--border)]"
                   }
                 `}
               >
@@ -168,7 +170,7 @@ export default function ProjectsPage() {
       <section className="relative pb-20">
         <div className="mx-auto max-w-6xl px-6 lg:px-10">
           {status === "loading" ? (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-sm text-white/60">
+            <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 text-sm text-[color:var(--muted)]">
               A carregar projetos...
             </div>
           ) : null}
@@ -194,7 +196,7 @@ export default function ProjectsPage() {
 
           {status === "idle" && filteredProjects.length === 0 ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
-              <p className="text-white/60">Nenhum projeto encontrado nesta categoria.</p>
+              <p className="text-[color:var(--muted)]">Nenhum projeto encontrado nesta categoria.</p>
             </motion.div>
           ) : null}
         </div>
@@ -202,7 +204,7 @@ export default function ProjectsPage() {
 
       <AnimatedSection className="relative py-20">
         <div className="mx-auto max-w-4xl px-6 lg:px-10">
-          <Card className="bg-white/[0.03] text-center">
+          <Card className="bg-[color:var(--surface)] text-center">
             <SectionHeading
               title="Queres um projeto semelhante?"
               subtitle="Partilha o teu objetivo e respondemos com uma proposta clara."

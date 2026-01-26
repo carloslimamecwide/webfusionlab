@@ -42,21 +42,19 @@ const itemVariants = {
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen overflow-hidden text-white">
+    <section className="relative min-h-screen overflow-hidden text-[color:var(--foreground)]">
       <div className="pointer-events-none absolute inset-0">
         <motion.div
-          className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,255,63,0.4),transparent_65%)] blur-[120px]"
+          className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(216,242,106,0.35),transparent_65%)] blur-[120px]"
           animate={{ y: [0, 16, 0], opacity: [0.6, 0.9, 0.6] }}
           transition={{ duration: 9, repeat: Infinity, ease: easeInOut }}
         />
         <motion.div
-          className="absolute right-6 top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.16),transparent_60%)] blur-[120px]"
-          animate={{ y: [0, -18, 0], opacity: [0.5, 0.9, 0.5] }}
+          className="absolute right-6 top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12),transparent_60%)] blur-[120px]"
+          animate={{ y: [0, -18, 0], opacity: [0.4, 0.8, 0.4] }}
           transition={{ duration: 11, repeat: Infinity, ease: easeInOut }}
         />
-        <div className="absolute left-0 top-32 h-px w-[70%] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-        <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-gradient-to-b from-white/15 via-transparent to-white/15 lg:block" />
-        <div className="absolute -bottom-16 right-16 h-64 w-64 rounded-full border border-white/10" />
+        <div className="absolute left-1/2 top-28 h-px w-[70%] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-20 pt-28 lg:px-10 lg:pt-36">
@@ -67,18 +65,18 @@ export default function Hero() {
           className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-end"
         >
           <motion.div variants={itemVariants} className="space-y-8">
-            <div className="flex flex-wrap items-center gap-4 text-[10px] uppercase tracking-[0.5em] text-white/60">
+            <div className="flex flex-wrap items-center gap-4 text-[11px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
               <span>Lisboa / Porto / Remote</span>
-              <span className="flex items-center gap-2 text-white/70">
+              <span className="flex items-center gap-2 text-[color:var(--foreground)]">
                 <span className="h-2 w-2 rounded-full bg-[color:var(--accent)]" />
                 Studio aberto
               </span>
             </div>
-            <h1 className="text-5xl uppercase leading-[0.9] tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
+            <h1 className="text-5xl font-semibold leading-[0.95] tracking-tight text-balance sm:text-6xl md:text-7xl lg:text-8xl">
               Produtos digitais que
               <span className="block text-[color:var(--accent)]">parecem inevitaveis.</span>
             </h1>
-            <p className="max-w-2xl text-base text-white/65 md:text-lg">
+            <p className="max-w-2xl text-base text-[color:var(--muted)] md:text-lg">
               Estrategia, design e engenharia numa unica equipa pronta para lancar rapido e escalar sem refazer tudo.
             </p>
             <div className="flex flex-wrap items-center gap-4">
@@ -89,17 +87,22 @@ export default function Hero() {
                 Ver projetos
               </Button>
             </div>
-            <div className="grid gap-3 text-[10px] uppercase tracking-[0.35em] text-white/40 sm:grid-cols-3">
+            <div className="grid gap-3 text-[11px] uppercase tracking-[0.24em] text-[color:var(--muted)] sm:grid-cols-3">
               {labSignals.map((signal) => (
-                <div key={signal.label} className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3">
-                  <div className="text-white/35">{signal.label}</div>
-                  <div className="mt-2 text-sm uppercase tracking-tight text-white">{signal.value}</div>
+                <div
+                  key={signal.label}
+                  className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-3"
+                >
+                  <div className="text-[color:var(--muted)]">{signal.label}</div>
+                  <div className="mt-2 text-sm font-medium tracking-tight text-[color:var(--foreground)]">
+                    {signal.value}
+                  </div>
                 </div>
               ))}
             </div>
-            <div className="flex flex-wrap gap-3 text-[10px] uppercase tracking-[0.35em] text-white/40">
+            <div className="flex flex-wrap gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--muted)]">
               {capabilityTags.map((tag) => (
-                <span key={tag} className="rounded-full border border-white/10 px-3 py-1">
+                <span key={tag} className="rounded-full border border-[color:var(--border)] px-3 py-1">
                   {tag}
                 </span>
               ))}
@@ -107,32 +110,41 @@ export default function Hero() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="space-y-6">
-            <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
                 <span>Studio status</span>
                 <span className="text-[color:var(--accent)]">Live</span>
               </div>
               <div className="mt-6 grid gap-4">
                 {heroStats.map((stat) => (
-                  <div key={stat.label} className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                  <div
+                    key={stat.label}
+                    className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-4 py-3"
+                  >
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-white/60">{stat.label}</span>
-                      <span className="text-lg uppercase tracking-tight text-white">{stat.value}</span>
+                      <span className="text-[color:var(--muted)]">{stat.label}</span>
+                      <span className="text-lg font-medium tracking-tight text-[color:var(--foreground)]">
+                        {stat.value}
+                      </span>
                     </div>
-                    <div className="mt-2 text-[10px] uppercase tracking-[0.35em] text-white/35">{stat.note}</div>
+                    <div className="mt-2 text-[10px] uppercase tracking-[0.25em] text-[color:var(--muted)]">
+                      {stat.note}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
               <div className="flex items-start justify-between gap-6">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.4em] text-white/50">Signal feed</p>
-                  <p className="mt-2 text-2xl uppercase tracking-tight text-white">Discovery, build, launch</p>
-                  <p className="mt-2 text-sm text-white/60">Atualizamos tudo em tempo real.</p>
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Signal feed</p>
+                  <p className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                    Discovery, build, launch
+                  </p>
+                  <p className="mt-2 text-sm text-[color:var(--muted)]">Atualizamos tudo em tempo real.</p>
                 </div>
-                <div className="h-12 w-12 rounded-full border border-white/20 bg-[color:var(--accent-soft)]" />
+                <div className="h-12 w-12 rounded-full border border-[color:var(--border)] bg-[color:var(--accent-soft)]" />
               </div>
               <div className="mt-6 space-y-4">
                 {signalFeed.map((signal, index) => (
@@ -144,9 +156,13 @@ export default function Hero() {
                       ) : null}
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-[0.35em] text-white/40">{signal.time}</div>
-                      <div className="mt-2 text-sm uppercase tracking-tight text-white">{signal.label}</div>
-                      <div className="mt-2 text-xs text-white/60">{signal.detail}</div>
+                      <div className="text-[10px] uppercase tracking-[0.25em] text-[color:var(--muted)]">
+                        {signal.time}
+                      </div>
+                      <div className="mt-2 text-sm font-medium tracking-tight text-[color:var(--foreground)]">
+                        {signal.label}
+                      </div>
+                      <div className="mt-2 text-xs text-[color:var(--muted)]">{signal.detail}</div>
                     </div>
                   </div>
                 ))}
@@ -155,7 +171,7 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        <div className="overflow-hidden rounded-full border border-white/10 bg-white/[0.03] py-3">
+        <div className="overflow-hidden rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] py-3">
           <motion.div
             className="flex w-max items-center gap-6 px-6"
             animate={{ x: ["0%", "-50%"] }}
@@ -164,7 +180,7 @@ export default function Hero() {
             {tickerLoop.map((item, index) => (
               <span
                 key={`${item}-${index}`}
-                className="flex items-center gap-3 text-[10px] uppercase tracking-[0.5em] text-white/50"
+                className="flex items-center gap-3 text-[10px] uppercase tracking-[0.38em] text-[color:var(--muted)]"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
                 {item}
@@ -177,11 +193,11 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="flex items-center gap-4 text-[10px] uppercase tracking-[0.4em] text-white/40"
+          className="flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-[color:var(--muted)]"
         >
           <span>Scroll</span>
           <motion.span
-            className="h-px w-12 bg-white/30"
+            className="h-px w-12 bg-white/25"
             animate={{ scaleX: [0.4, 1, 0.4] }}
             transition={{ duration: 2.4, repeat: Infinity, ease: easeInOut }}
           />

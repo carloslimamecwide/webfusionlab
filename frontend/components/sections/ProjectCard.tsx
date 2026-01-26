@@ -24,7 +24,7 @@ export default function ProjectCard({ project, showYear = false, stackLimit, cla
 
   return (
     <Card hover className={`h-full overflow-hidden group ${className}`}>
-      <div className="relative aspect-video mb-4 rounded-xl overflow-hidden border border-white/10 bg-white/[0.03]">
+      <div className="relative aspect-video mb-4 rounded-xl overflow-hidden border border-white/10 bg-[color:var(--surface-muted)]">
         <img
           src={imageSrc}
           alt={project.title}
@@ -33,17 +33,17 @@ export default function ProjectCard({ project, showYear = false, stackLimit, cla
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
       </div>
-      <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-white/50">
+      <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-[color:var(--muted)]">
         <span>{project.category}</span>
         {showYear && <span>{project.year}</span>}
       </div>
-      <h3 className="text-xl font-semibold mt-3 tracking-tight text-white">{project.title}</h3>
-      <p className="text-white/60 text-sm mt-2 leading-relaxed">{project.description}</p>
+      <h3 className="text-xl font-semibold mt-3 tracking-tight text-[color:var(--foreground)]">{project.title}</h3>
+      <p className="text-[color:var(--muted)] text-sm mt-2 leading-relaxed">{project.description}</p>
       <div className="flex flex-wrap gap-2 pt-4">
         {stack.map((tech) => (
           <span
             key={tech}
-            className="inline-flex items-center rounded-full border border-white/20 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.18em] text-white/60"
+            className="inline-flex items-center rounded-full border border-[color:var(--border)] px-2.5 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[color:var(--muted)]"
           >
             {tech}
           </span>

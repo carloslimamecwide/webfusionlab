@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, Syne } from "next/font/google";
+import { Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import LayoutChrome from "@/components/LayoutChrome";
 
-const syne = Syne({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const ibmPlexSans = IBM_Plex_Sans({
+const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-PT" className={`${syne.variable} ${ibmPlexSans.variable}`}>
+    <html lang="pt-PT" className={`${spaceGrotesk.variable} ${manrope.variable}`}>
       <body>
         <LayoutChrome>{children}</LayoutChrome>
       </body>

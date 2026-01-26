@@ -281,48 +281,50 @@ export default function StudioPage() {
         right={
           token ? (
             <>
-              <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-                <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+              <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
+                <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
                   <span>Session</span>
                   <span className="text-[color:var(--accent)]">Live</span>
                 </div>
                 <div className="mt-6 space-y-4 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-white/60">Admin</span>
-                    <span className="text-white">{admin?.name || "Admin"}</span>
+                    <span className="text-[color:var(--muted)]">Admin</span>
+                    <span className="text-[color:var(--foreground)]">{admin?.name || "Admin"}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-white/60">Email</span>
-                    <span className="text-white">{admin?.email || "-"}</span>
+                    <span className="text-[color:var(--muted)]">Email</span>
+                    <span className="text-[color:var(--foreground)]">{admin?.email || "-"}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-white/60">Ultima atualizacao</span>
-                    <span className="text-white">{latestUpdate}</span>
+                    <span className="text-[color:var(--muted)]">Ultima atualizacao</span>
+                    <span className="text-[color:var(--foreground)]">{latestUpdate}</span>
                   </div>
                 </div>
               </div>
-              <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
-                <div className="text-[10px] uppercase tracking-[0.4em] text-white/50">Estado</div>
-                <div className="mt-3 text-2xl uppercase tracking-tight text-white">Sincronizado</div>
-                <p className="mt-2 text-sm text-white/60">Qualquer acao atualiza a base em tempo real.</p>
+              <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
+                <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Estado</div>
+                <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  Sincronizado
+                </div>
+                <p className="mt-2 text-sm text-[color:var(--muted)]">Qualquer acao atualiza a base em tempo real.</p>
               </div>
             </>
           ) : (
             <>
-              <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-                <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+              <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
+                <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
                   <span>Seguranca</span>
                   <span className="text-[color:var(--accent)]">JWT</span>
                 </div>
-                <div className="mt-6 space-y-3 text-sm text-white/70">
+                <div className="mt-6 space-y-3 text-sm text-[color:var(--muted)]">
                   <p>Usa as credenciais de admin do backend.</p>
                   <p>Login necessario para ver e editar projetos.</p>
                 </div>
               </div>
-              <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
-                <div className="text-[10px] uppercase tracking-[0.4em] text-white/50">Acesso</div>
-                <div className="mt-3 text-2xl uppercase tracking-tight text-white">Privado</div>
-                <p className="mt-2 text-sm text-white/60">Rota fora do menu publico.</p>
+              <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
+                <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Acesso</div>
+                <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">Privado</div>
+                <p className="mt-2 text-sm text-[color:var(--muted)]">Rota fora do menu publico.</p>
               </div>
             </>
           )
@@ -334,7 +336,7 @@ export default function StudioPage() {
           {!token ? (
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)] lg:items-start">
               <AnimatedSection>
-                <Card className="bg-white/[0.03]">
+                <Card className="bg-[color:var(--surface)]">
                   <SectionHeading
                     align="left"
                     eyebrow="Login"
@@ -354,7 +356,7 @@ export default function StudioPage() {
                         type="email"
                         value={loginData.email}
                         onChange={(event) => setLoginData((prev) => ({ ...prev, email: event.target.value }))}
-                        className="w-full rounded-xl border border-white/15 bg-white/[0.02] px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)]"
+                        className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)]"
                         placeholder="admin@email.com"
                       />
                     </div>
@@ -368,7 +370,7 @@ export default function StudioPage() {
                         type="password"
                         value={loginData.password}
                         onChange={(event) => setLoginData((prev) => ({ ...prev, password: event.target.value }))}
-                        className="w-full rounded-xl border border-white/15 bg-white/[0.02] px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)]"
+                        className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)]"
                         placeholder="********"
                       />
                     </div>
@@ -379,7 +381,7 @@ export default function StudioPage() {
                             ? "border-green-400/40 bg-green-500/15 text-green-200"
                             : loginStatus.type === "error"
                               ? "border-red-400/40 bg-red-500/15 text-red-200"
-                              : "border-white/10 bg-white/[0.02] text-white/60"
+                              : "border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--muted)]"
                         }`}
                       >
                         {loginStatus.message}
@@ -402,7 +404,7 @@ export default function StudioPage() {
                     size="md"
                     className="mb-6"
                   />
-                  <ul className="space-y-3 text-sm text-white/60">
+                  <ul className="space-y-3 text-sm text-[color:var(--muted)]">
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
                       Backend ativo em `NEXT_PUBLIC_API_URL`.
@@ -422,7 +424,7 @@ export default function StudioPage() {
           ) : (
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:items-start">
               <AnimatedSection>
-                <Card className="bg-white/[0.03]">
+                <Card className="bg-[color:var(--surface)]">
                   <SectionHeading
                     align="left"
                     eyebrow={editingId ? "Editar projeto" : "Novo projeto"}
@@ -441,7 +443,7 @@ export default function StudioPage() {
                         name="title"
                         value={formData.title}
                         onChange={handleProjectChange}
-                        className="w-full rounded-xl border border-white/15 bg-white/[0.02] px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)]"
+                        className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)]"
                         placeholder="Nome do projeto"
                       />
                     </div>
@@ -455,7 +457,7 @@ export default function StudioPage() {
                         rows={4}
                         value={formData.description}
                         onChange={handleProjectChange}
-                        className="w-full resize-none rounded-xl border border-white/15 bg-white/[0.02] px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)]"
+                        className="w-full resize-none rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)]"
                         placeholder="Resumo do projeto"
                       />
                     </div>
@@ -469,7 +471,7 @@ export default function StudioPage() {
                           name="category"
                           value={formData.category}
                           onChange={handleProjectChange}
-                          className="w-full rounded-xl border border-white/15 bg-black/60 px-4 py-3 text-white focus:outline-none focus:border-[color:var(--accent)]"
+                          className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] focus:outline-none focus:border-[color:var(--accent)]"
                         >
                           {categoryOptions.map((option) => (
                             <option key={option} value={option}>
@@ -487,7 +489,7 @@ export default function StudioPage() {
                           name="year"
                           value={formData.year}
                           onChange={handleProjectChange}
-                          className="w-full rounded-xl border border-white/15 bg-white/[0.02] px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)]"
+                          className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)]"
                           placeholder="2024"
                         />
                       </div>
@@ -501,7 +503,7 @@ export default function StudioPage() {
                         name="stack"
                         value={formData.stack}
                         onChange={handleProjectChange}
-                        className="w-full rounded-xl border border-white/15 bg-white/[0.02] px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)]"
+                        className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)]"
                         placeholder="Next.js, Node.js, PostgreSQL"
                       />
                     </div>
@@ -514,7 +516,7 @@ export default function StudioPage() {
                         name="image"
                         value={formData.image}
                         onChange={handleProjectChange}
-                        className="w-full rounded-xl border border-white/15 bg-white/[0.02] px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)]"
+                        className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)]"
                         placeholder="https://..."
                       />
                     </div>
@@ -527,7 +529,7 @@ export default function StudioPage() {
                         name="link"
                         value={formData.link}
                         onChange={handleProjectChange}
-                        className="w-full rounded-xl border border-white/15 bg-white/[0.02] px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)]"
+                        className="w-full rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)]"
                         placeholder="https://..."
                       />
                     </div>
@@ -539,7 +541,7 @@ export default function StudioPage() {
                             ? "border-green-400/40 bg-green-500/15 text-green-200"
                             : actionStatus.type === "error"
                               ? "border-red-400/40 bg-red-500/15 text-red-200"
-                              : "border-white/10 bg-white/[0.02] text-white/60"
+                              : "border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--muted)]"
                         }`}
                       >
                         {actionStatus.message}
@@ -565,7 +567,7 @@ export default function StudioPage() {
               </AnimatedSection>
 
               <AnimatedSection delay={0.1}>
-                <Card className="bg-white/[0.03]">
+                <Card className="bg-[color:var(--surface)]">
                   <SectionHeading
                     align="left"
                     eyebrow="Projetos"
@@ -575,11 +577,11 @@ export default function StudioPage() {
                     className="mb-6"
                   />
                   {projectsStatus.type === "loading" ? (
-                    <div className="text-sm text-white/60">A carregar projetos...</div>
+                    <div className="text-sm text-[color:var(--muted)]">A carregar projetos...</div>
                   ) : null}
                   <div className="space-y-4">
                     {projects.length === 0 ? (
-                      <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-sm text-white/60">
+                      <div className="rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 text-sm text-[color:var(--muted)]">
                         Nenhum projeto registado.
                       </div>
                     ) : null}
@@ -588,18 +590,23 @@ export default function StudioPage() {
                         key={project.id}
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="rounded-2xl border border-white/10 bg-black/20 p-4"
+                        className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-muted)] p-4"
                       >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>
-                            <div className="text-[10px] uppercase tracking-[0.35em] text-white/40">
+                            <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]">
                               {project.category} • {project.year}
                             </div>
-                            <div className="mt-2 text-lg uppercase tracking-tight text-white">{project.title}</div>
-                            <p className="mt-2 text-sm text-white/60">{project.description}</p>
-                            <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.3em] text-white/45">
+                            <div className="mt-2 text-lg font-semibold tracking-tight text-[color:var(--foreground)]">
+                              {project.title}
+                            </div>
+                            <p className="mt-2 text-sm text-[color:var(--muted)]">{project.description}</p>
+                            <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--muted)]">
                               {project.stack.map((item) => (
-                                <span key={`${project.id}-${item}`} className="rounded-full border border-white/10 px-3 py-1">
+                                <span
+                                  key={`${project.id}-${item}`}
+                                  className="rounded-full border border-[color:var(--border)] px-3 py-1"
+                                >
                                   {item}
                                 </span>
                               ))}

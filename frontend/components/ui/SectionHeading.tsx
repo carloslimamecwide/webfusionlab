@@ -27,14 +27,14 @@ export default function SectionHeading({
   return (
     <div className={`${alignment} ${className}`}>
       {eyebrow && (
-        <div className="text-[10px] uppercase tracking-[0.4em] text-[color:var(--accent)] mb-3">{eyebrow}</div>
+        <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--accent)] mb-3">{eyebrow}</div>
       )}
-      <h2 className={`${titleSize} font-semibold text-white tracking-tight leading-tight text-balance`}>
+      <h2 className={`${titleSize} font-semibold text-[color:var(--foreground)] tracking-tight leading-tight text-balance`}>
         {title}
       </h2>
       {subtitle && (
         <p
-          className={`mt-4 text-white/60 max-w-2xl ${subtitleAlignment} ${subtitleSize} leading-relaxed text-balance`}
+          className={`mt-4 text-[color:var(--muted)] max-w-2xl ${subtitleAlignment} ${subtitleSize} leading-relaxed text-balance`}
         >
           {subtitle}
         </p>

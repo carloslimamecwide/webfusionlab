@@ -1,30 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
-  --foreground: #f3f3f3;
-  --muted: #9a9a9a;
-  --accent: #d6ff3f;
-  --accent-strong: #bff029;
-  --accent-soft: rgba(214, 255, 63, 0.18);
-  --surface: rgba(255, 255, 255, 0.02);
-  --surface-muted: rgba(255, 255, 255, 0.05);
-  --border: rgba(255, 255, 255, 0.1);
-  --border-strong: rgba(255, 255, 255, 0.22);
+  --background: #0b0d0f;
+  --foreground: #f5f6f4;
+  --muted: #a2a8b3;
+  --accent: #d8f26a;
+  --accent-strong: #c3e84c;
+  --accent-soft: rgba(216, 242, 106, 0.16);
+  --surface: rgba(255, 255, 255, 0.03);
+  --surface-strong: rgba(255, 255, 255, 0.06);
+  --surface-muted: rgba(255, 255, 255, 0.02);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.35);
+  --shadow-strong: 0 30px 90px rgba(0, 0, 0, 0.45);
   color-scheme: dark;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body), "Arial Narrow", "Segoe UI", sans-serif;
+  font-family: var(--font-body), "Avenir Next", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100%;
   position: relative;
-  background-image: radial-gradient(circle at 15% 10%, rgba(214, 255, 63, 0.12), transparent 45%),
-    radial-gradient(circle at 85% 0%, rgba(255, 255, 255, 0.08), transparent 35%),
-    linear-gradient(180deg, rgba(8, 8, 8, 0.8), transparent 45%, rgba(4, 4, 4, 0.9) 100%);
+  background-image: radial-gradient(circle at 15% 10%, rgba(216, 242, 106, 0.12), transparent 50%),
+    radial-gradient(circle at 85% 0%, rgba(255, 255, 255, 0.08), transparent 40%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.04), transparent 40%);
   overflow-x: hidden;
 }
 
@@ -35,9 +38,9 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 0.5px, transparent 0.5px);
-  background-size: 18px 18px;
-  opacity: 0.12;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+  opacity: 0.08;
   pointer-events: none;
   z-index: 0;
 }
@@ -47,7 +50,13 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(3, 3, 3, 0.9) 0%, transparent 40%, transparent 70%, rgba(3, 3, 3, 0.9) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(6, 6, 6, 0.85) 0%,
+    transparent 45%,
+    transparent 70%,
+    rgba(6, 6, 6, 0.85) 100%
+  );
   z-index: 0;
 }
 
@@ -67,7 +76,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display), "Times New Roman", serif;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 :focus-visible {

@@ -123,24 +123,28 @@ export default function ContactPage() {
         stats={heroStats}
         right={
           <>
-            <div className="rounded-3xl border border-white/15 bg-white/[0.03] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.4em] text-white/50">
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
                 <span>Informacoes</span>
                 <span className="text-[color:var(--accent)]">Live</span>
               </div>
               <div className="mt-6 space-y-4 text-sm">
                 {contactSignals.map((item) => (
                   <div key={item.label} className="flex items-center justify-between">
-                    <span className="text-white/60">{item.label}</span>
-                    <span className="text-white">{item.value}</span>
+                    <span className="text-[color:var(--muted)]">{item.label}</span>
+                    <span className="text-[color:var(--foreground)]">{item.value}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent p-6">
-              <div className="text-[10px] uppercase tracking-[0.4em] text-white/50">Checklist</div>
-              <div className="mt-3 text-2xl uppercase tracking-tight text-white">Brief + objetivos</div>
-              <p className="mt-2 text-sm text-white/60">Quanto mais detalhe, mais rapido entregamos o plano.</p>
+            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
+              <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Checklist</div>
+              <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                Brief + objetivos
+              </div>
+              <p className="mt-2 text-sm text-[color:var(--muted)]">
+                Quanto mais detalhe, mais rapido entregamos o plano.
+              </p>
             </div>
           </>
         }
@@ -151,24 +155,24 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
             <AnimatedSection className="space-y-6">
               <Card>
-                <h3 className="text-lg font-semibold mb-4 text-white uppercase tracking-wide">Informacoes</h3>
+                <h3 className="text-lg font-semibold mb-4 tracking-wide text-[color:var(--foreground)]">Informacoes</h3>
                 <div className="space-y-6">
                   <div>
-                    <div className="text-sm text-white/50 mb-2">Localizacao</div>
-                    <p className="text-white">Portugal</p>
+                    <div className="text-sm text-[color:var(--muted)] mb-2">Localizacao</div>
+                    <p className="text-[color:var(--foreground)]">Portugal</p>
                   </div>
                   <div>
-                    <div className="text-sm text-white/50 mb-2">Email</div>
+                    <div className="text-sm text-[color:var(--muted)] mb-2">Email</div>
                     <a
                       href="mailto:contact@webfusionlab.pt"
-                      className="text-[color:var(--accent)] hover:text-white transition-colors"
+                      className="text-[color:var(--accent)] hover:text-[color:var(--foreground)] transition-colors"
                     >
                       contact@webfusionlab.pt
                     </a>
                   </div>
                   <div>
-                    <div className="text-sm text-white/50 mb-2">Disponibilidade</div>
-                    <p className="text-white/70 text-sm">
+                    <div className="text-sm text-[color:var(--muted)] mb-2">Disponibilidade</div>
+                    <p className="text-[color:var(--muted)] text-sm">
                       Segunda a Sexta: 09:00 - 18:00
                       <br />
                       Resposta em ate 24 horas
@@ -177,12 +181,12 @@ export default function ContactPage() {
                 </div>
               </Card>
 
-              <Card className="bg-white/[0.03]">
-                <h3 className="text-lg font-semibold mb-4 text-white uppercase tracking-wide">Redes sociais</h3>
+              <Card className="bg-[color:var(--surface)]">
+                <h3 className="text-lg font-semibold mb-4 tracking-wide text-[color:var(--foreground)]">Redes sociais</h3>
                 <div className="flex gap-4">
                   <a
                     href="#"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/60 transition-colors hover:text-white hover:border-white/60"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--muted)] transition-colors hover:text-[color:var(--foreground)] hover:border-[color:var(--border-strong)]"
                     aria-label="LinkedIn"
                   >
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -191,7 +195,7 @@ export default function ContactPage() {
                   </a>
                   <a
                     href="#"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/60 transition-colors hover:text-white hover:border-white/60"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border)] text-[color:var(--muted)] transition-colors hover:text-[color:var(--foreground)] hover:border-[color:var(--border-strong)]"
                     aria-label="GitHub"
                   >
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -201,9 +205,9 @@ export default function ContactPage() {
                 </div>
               </Card>
 
-              <Card className="bg-white/[0.03]">
-                <h3 className="text-lg font-semibold mb-4 text-white uppercase tracking-wide">O que esperar</h3>
-                <ul className="space-y-3 text-sm text-white/60">
+              <Card className="bg-[color:var(--surface)]">
+                <h3 className="text-lg font-semibold mb-4 tracking-wide text-[color:var(--foreground)]">O que esperar</h3>
+                <ul className="space-y-3 text-sm text-[color:var(--muted)]">
                   <li className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
                     Diagnostico rapido do teu pedido.
@@ -224,37 +228,37 @@ export default function ContactPage() {
               <Card>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium mb-2">
-                        Nome *
-                      </label>
-                      <input
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium mb-2">
+                      Nome *
+                    </label>
+                    <input
                         type="text"
                         id="name"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full bg-white/[0.02] border border-white/15 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)] transition-colors"
-                        placeholder="O teu nome"
-                      />
-                    </div>
-                    <div>
+                      className="w-full bg-[color:var(--surface)] border border-[color:var(--border)] rounded-xl px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)] transition-colors"
+                      placeholder="O teu nome"
+                    />
+                  </div>
+                  <div>
                       <label htmlFor="email" className="block text-sm font-medium mb-2">
                         Email *
                       </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full bg-white/[0.02] border border-white/15 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)] transition-colors"
-                        placeholder="teu@email.com"
-                      />
-                    </div>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-[color:var(--surface)] border border-[color:var(--border)] rounded-xl px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)] transition-colors"
+                      placeholder="teu@email.com"
+                    />
                   </div>
+                </div>
 
                   <div>
                     <label htmlFor="subject" className="block text-sm font-medium mb-2">
@@ -267,7 +271,7 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full bg-white/[0.02] border border-white/15 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)] transition-colors"
+                      className="w-full bg-[color:var(--surface)] border border-[color:var(--border)] rounded-xl px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)] transition-colors"
                       placeholder="Ex: Novo website, App mobile, Consultoria"
                     />
                   </div>
@@ -283,7 +287,7 @@ export default function ContactPage() {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full bg-white/[0.02] border border-white/15 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-[color:var(--accent)] transition-colors resize-none"
+                      className="w-full bg-[color:var(--surface)] border border-[color:var(--border)] rounded-xl px-4 py-3 text-[color:var(--foreground)] placeholder:text-[color:var(--muted)] focus:outline-none focus:border-[color:var(--accent)] transition-colors resize-none"
                       placeholder="Conta-nos sobre o teu projeto..."
                     />
                   </div>
@@ -316,7 +320,7 @@ export default function ContactPage() {
                     {status.type === "loading" ? "A enviar..." : "Enviar Mensagem"}
                   </Button>
 
-                  <p className="text-xs text-white/50 text-center">
+                  <p className="text-xs text-[color:var(--muted)] text-center">
                     Respeitamos a tua privacidade. Nunca partilhamos dados com terceiros.
                   </p>
                 </form>

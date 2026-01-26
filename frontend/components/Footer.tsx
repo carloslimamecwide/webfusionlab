@@ -4,15 +4,15 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-black border-t border-white/10 mt-20">
+    <footer className="border-t border-white/10 mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo e Descrição */}
           <div className="col-span-1 md:col-span-2">
-            <div className="text-sm uppercase tracking-[0.4em] text-white mb-4">
+            <div className="text-sm font-semibold tracking-[0.12em] text-[color:var(--foreground)] mb-4">
               Web<span className="text-[color:var(--accent)]">Fusion</span>Lab
             </div>
-            <p className="text-white/60 text-sm mb-4 max-w-md">
+            <p className="text-[color:var(--muted)] text-sm mb-4 max-w-md">
               Produtos digitais com foco em performance, conversão e escala. Web, mobile, marketing e automação com
               AI.
             </p>
@@ -20,12 +20,12 @@ export default function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="text-[11px] uppercase tracking-[0.35em] text-white/70 mb-4">Links</h3>
+            <h3 className="text-xs uppercase tracking-[0.2em] text-[color:var(--muted)] mb-4">Links</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/"
-                  className="text-white/60 hover:text-white text-sm transition-colors"
+                  className="text-[color:var(--muted)] hover:text-[color:var(--foreground)] text-sm transition-colors"
                 >
                   Home
                 </Link>
@@ -33,7 +33,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-white/60 hover:text-white text-sm transition-colors"
+                  className="text-[color:var(--muted)] hover:text-[color:var(--foreground)] text-sm transition-colors"
                 >
                   Sobre
                 </Link>
@@ -41,7 +41,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/services"
-                  className="text-white/60 hover:text-white text-sm transition-colors"
+                  className="text-[color:var(--muted)] hover:text-[color:var(--foreground)] text-sm transition-colors"
                 >
                   Serviços
                 </Link>
@@ -49,7 +49,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/projects"
-                  className="text-white/60 hover:text-white text-sm transition-colors"
+                  className="text-[color:var(--muted)] hover:text-[color:var(--foreground)] text-sm transition-colors"
                 >
                   Projetos
                 </Link>
@@ -57,7 +57,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="text-white/60 hover:text-white text-sm transition-colors"
+                  className="text-[color:var(--muted)] hover:text-[color:var(--foreground)] text-sm transition-colors"
                 >
                   Contacto
                 </Link>
@@ -67,13 +67,13 @@ export default function Footer() {
 
           {/* Contacto */}
           <div>
-            <h3 className="text-[11px] uppercase tracking-[0.35em] text-white/70 mb-4">Contacto</h3>
-            <ul className="space-y-2 text-sm text-white/60">
+            <h3 className="text-xs uppercase tracking-[0.2em] text-[color:var(--muted)] mb-4">Contacto</h3>
+            <ul className="space-y-2 text-sm text-[color:var(--muted)]">
               <li>Portugal</li>
               <li>
                 <a
                   href="mailto:contact@webfusionlab.pt"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[color:var(--foreground)] transition-colors"
                 >
                   contact@webfusionlab.pt
                 </a>
@@ -82,7 +82,7 @@ export default function Footer() {
             <div className="flex gap-4 mt-4">
               <a
                 href="#"
-                className="text-white/60 hover:text-white transition-colors"
+                className="text-[color:var(--muted)] hover:text-[color:var(--foreground)] transition-colors"
                 aria-label="LinkedIn"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="text-white/60 hover:text-white transition-colors"
+                className="text-[color:var(--muted)] hover:text-[color:var(--foreground)] transition-colors"
                 aria-label="GitHub"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-8 pt-8 text-center text-sm text-white/50">
+        <div className="border-t border-white/10 mt-8 pt-8 text-center text-sm text-[color:var(--muted)]">
           <p>&copy; {currentYear} WebFusionLab. Todos os direitos reservados.</p>
         </div>
       </div>

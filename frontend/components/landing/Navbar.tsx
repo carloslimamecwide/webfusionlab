@@ -19,7 +19,7 @@ export default function LandingNavbar() {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="text-sm uppercase tracking-[0.4em] text-white">
+          <Link href="/" className="text-sm font-semibold tracking-[0.12em] text-[color:var(--foreground)]">
             Web<span className="text-[color:var(--accent)]">Fusion</span>Lab
           </Link>
           <div className="hidden items-center gap-8 md:flex">
@@ -27,7 +27,7 @@ export default function LandingNavbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[11px] font-medium uppercase tracking-[0.35em] text-white/60 transition-colors hover:text-white"
+                className="text-sm font-medium tracking-[0.08em] text-[color:var(--muted)] transition-colors hover:text-[color:var(--foreground)]"
               >
                 {link.label}
               </Link>
@@ -36,7 +36,7 @@ export default function LandingNavbar() {
           <button
             type="button"
             aria-label="Open menu"
-            className="text-[11px] uppercase tracking-[0.4em] text-white/80 md:hidden"
+            className="text-xs tracking-[0.2em] text-[color:var(--foreground)] md:hidden"
           >
             Menu
           </button>

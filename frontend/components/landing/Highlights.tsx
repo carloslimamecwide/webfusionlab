@@ -65,11 +65,10 @@ const itemVariants = {
 
 export default function Highlights() {
   return (
-    <section className="relative pb-24 pt-20 text-white">
+    <section className="relative pb-24 pt-20 text-[color:var(--foreground)]">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-12 h-px w-[75%] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-        <div className="absolute right-12 top-16 h-32 w-32 rounded-full border border-white/10" />
-        <div className="absolute bottom-6 left-10 h-44 w-44 rounded-full border border-white/10" />
+        <div className="absolute left-1/2 top-12 h-px w-[70%] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/12 to-transparent" />
+        <div className="absolute right-12 top-16 h-24 w-24 rounded-full border border-white/10" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-6 lg:px-10">
@@ -81,28 +80,28 @@ export default function Highlights() {
             transition={{ duration: 0.6, ease: easeOut }}
             className="space-y-6"
           >
-            <div className="flex flex-wrap items-center gap-4 text-[10px] uppercase tracking-[0.4em] text-white/50">
+            <div className="flex flex-wrap items-center gap-4 text-[11px] uppercase tracking-[0.26em] text-[color:var(--muted)]">
               <span className="text-[color:var(--accent)]">Projetos em foco</span>
               <span>2023-2024</span>
               <span>Portugal + EU</span>
             </div>
-            <h2 className="text-4xl uppercase leading-tight tracking-tight sm:text-5xl">
+            <h2 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
               Casos com pressao real, resultados que ficam.
             </h2>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-[color:var(--muted)]">
               Selecionamos entregas onde cada etapa aproximou produto, marca e marketing num unico movimento.
             </p>
 
             <motion.article
               whileHover={{ y: -6 }}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] shadow-[0_28px_70px_rgba(0,0,0,0.4)]"
+              className="group relative overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-[var(--shadow-strong)]"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
-                <div className="absolute left-5 top-5 z-10 flex items-center gap-3 rounded-full border border-white/20 bg-black/40 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-white/80">
+                <div className="absolute left-5 top-5 z-10 flex items-center gap-3 rounded-full border border-white/15 bg-black/40 px-4 py-2 text-[10px] uppercase tracking-[0.24em] text-white/80">
                   <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
                   <span>Case 01</span>
                 </div>
-                <div className="absolute bottom-5 right-5 z-10 rounded-full border border-white/20 bg-black/40 px-3 py-2 text-[10px] uppercase tracking-[0.35em] text-white/80">
+                <div className="absolute bottom-5 right-5 z-10 rounded-full border border-white/15 bg-black/40 px-3 py-2 text-[10px] uppercase tracking-[0.24em] text-white/80">
                   {featuredCase.metric}
                 </div>
                 <img
@@ -113,13 +112,13 @@ export default function Highlights() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               </div>
-              <div className="flex items-center justify-between px-6 pt-5 text-[10px] uppercase tracking-[0.35em] text-white/60">
+              <div className="flex items-center justify-between px-6 pt-5 text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]">
                 <span>{featuredCase.tag}</span>
                 <span className="text-[color:var(--accent)]">Featured</span>
               </div>
               <div className="px-6 pb-6 pt-3">
-                <h3 className="text-2xl uppercase tracking-tight">{featuredCase.title}</h3>
-                <p className="mt-3 text-sm text-white/65">{featuredCase.description}</p>
+                <h3 className="text-2xl font-semibold tracking-tight">{featuredCase.title}</h3>
+                <p className="mt-3 text-sm text-[color:var(--muted)]">{featuredCase.description}</p>
               </div>
             </motion.article>
           </motion.div>
@@ -131,16 +130,19 @@ export default function Highlights() {
             viewport={{ once: true, amount: 0.3 }}
             className="space-y-6"
           >
-            <motion.div variants={itemVariants} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.35em] text-white/50">
+            <motion.div
+              variants={itemVariants}
+              className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5"
+            >
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]">
                 <span>Logbook</span>
                 <span>03</span>
               </div>
-              <ul className="mt-4 space-y-3 text-sm text-white/70">
+              <ul className="mt-4 space-y-3 text-sm text-[color:var(--muted)]">
                 {logbook.map((item) => (
                   <li key={item.label} className="flex items-center justify-between border-b border-white/10 pb-3">
                     <span>{item.label}</span>
-                    <span className="text-white/40">{item.value}</span>
+                    <span className="text-[color:var(--muted)]">{item.value}</span>
                   </li>
                 ))}
               </ul>
@@ -152,7 +154,7 @@ export default function Highlights() {
                   key={item.title}
                   variants={itemVariants}
                   whileHover={{ y: -6 }}
-                  className="group flex gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all duration-300 hover:border-white/25"
+                  className="group flex gap-4 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 transition-all duration-300 hover:border-[color:var(--border-strong)]"
                 >
                   <div className="relative h-20 w-20 overflow-hidden rounded-xl border border-white/10">
                     <img
@@ -163,12 +165,12 @@ export default function Highlights() {
                     />
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.35em] text-white/40">
+                    <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]">
                       <span>{item.tag}</span>
                       <span>{item.metric}</span>
                     </div>
-                    <h3 className="mt-2 text-base uppercase tracking-tight">{item.title}</h3>
-                    <p className="mt-2 text-sm text-white/60">{item.description}</p>
+                    <h3 className="mt-2 text-base font-semibold tracking-tight">{item.title}</h3>
+                    <p className="mt-2 text-sm text-[color:var(--muted)]">{item.description}</p>
                   </div>
                 </motion.article>
               ))}
@@ -176,7 +178,7 @@ export default function Highlights() {
 
             <motion.div
               variants={itemVariants}
-              className="flex items-center justify-between rounded-full border border-white/15 bg-white/[0.02] px-5 py-3 text-[10px] uppercase tracking-[0.35em] text-white/60"
+              className="flex items-center justify-between rounded-full border border-[color:var(--border)] bg-[color:var(--surface-muted)] px-5 py-3 text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]"
             >
               <span>Disponivel agora</span>
               <span className="text-[color:var(--accent)]">Live</span>
@@ -195,10 +197,12 @@ export default function Highlights() {
             <motion.div
               key={item.label}
               variants={itemVariants}
-              className="rounded-2xl border border-white/10 bg-white/[0.02] p-5"
+              className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5"
             >
-              <div className="text-[10px] uppercase tracking-[0.35em] text-white/40">{item.label}</div>
-              <div className="mt-3 text-lg uppercase tracking-tight text-white">{item.value}</div>
+              <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]">{item.label}</div>
+              <div className="mt-3 text-lg font-semibold tracking-tight text-[color:var(--foreground)]">
+                {item.value}
+              </div>
             </motion.div>
           ))}
         </motion.div>

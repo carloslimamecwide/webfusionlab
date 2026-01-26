@@ -18,12 +18,15 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "px-6 py-3 rounded-full text-[11px] font-medium uppercase tracking-[0.35em] transition-all duration-300 inline-flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium tracking-[0.12em] transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed";
 
   const variants = {
-    primary: "bg-[color:var(--accent)] text-black border border-transparent hover:bg-[color:var(--accent-strong)]",
-    secondary: "bg-transparent text-white/70 border border-white/20 hover:border-white hover:text-white",
-    outline: "bg-white/5 text-white border border-white/30 hover:border-white hover:bg-white/10",
+    primary:
+      "bg-[color:var(--accent)] text-[color:var(--background)] border border-transparent shadow-[0_10px_30px_rgba(216,242,106,0.2)] hover:bg-[color:var(--accent-strong)]",
+    secondary:
+      "bg-transparent text-[color:var(--foreground)] border border-[color:var(--border-strong)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]",
+    outline:
+      "bg-transparent text-[color:var(--foreground)] border border-[color:var(--border)] hover:border-[color:var(--border-strong)] hover:bg-[color:var(--surface)]",
   };
 
   const styles = `${baseStyles} ${variants[variant]} ${className}`;
