@@ -10,6 +10,17 @@ declare global {
   }
 }
 
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      return "";
+    }
+    return "dev-insecure-secret";
+  }
+  return secret;
+}
+
 export function authMiddleware(req: Request, res: Response, next: NextFunction): void {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -19,7 +30,13 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
       return;
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret") as JwtPayload;
+    const secret = getJwtSecret();
+    if (!secret) {
+      res.status(500).json({ error: "Configuração de autenticação inválida" });
+      return;
+    }
+
+    const decoded = jwt.verify(token, secret) as JwtPayload;
     req.admin = decoded;
     next();
   } catch (error) {
@@ -28,5 +45,9 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
 }
 
 export function generateToken(adminId: string, email: string): string {
-  return jwt.sign({ adminId, email }, process.env.JWT_SECRET || "secret", { expiresIn: "24h" });
+  const secret = getJwtSecret();
+  if (!secret) {
+    throw new Error("JWT_SECRET deve estar definido em produção");
+  }
+  return jwt.sign({ adminId, email }, secret, { expiresIn: "24h" });
 }

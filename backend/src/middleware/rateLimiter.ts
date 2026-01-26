@@ -13,6 +13,18 @@ export const generalLimiter = rateLimit({
 });
 
 /**
+ * Rate limiter para autenticação
+ * Máximo de 10 tentativas por 15 minutos por IP
+ */
+export const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 10,
+  message: "Muitas tentativas de autenticação, tente novamente mais tarde.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+/**
  * Rate limiter mais restritivo para envio de emails
  * Máximo de 5 requisições por hora por IP
  */

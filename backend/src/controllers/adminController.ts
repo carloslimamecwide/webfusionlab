@@ -51,6 +51,21 @@ export async function loginAdmin(req: Request, res: Response): Promise<void> {
 
 export async function registerAdmin(req: Request, res: Response): Promise<void> {
   try {
+    const isProd = process.env.NODE_ENV === "production";
+    if (isProd) {
+      const setupToken = process.env.ADMIN_REGISTRATION_TOKEN;
+      if (!setupToken) {
+        res.status(403).json({ error: "Registro de admin desabilitado" });
+        return;
+      }
+
+      const requestToken = req.header("x-admin-setup-token");
+      if (requestToken !== setupToken) {
+        res.status(403).json({ error: "Token de registro inválido" });
+        return;
+      }
+    }
+
     const { email, password, name } = req.body;
 
     if (!email || !password || !name) {

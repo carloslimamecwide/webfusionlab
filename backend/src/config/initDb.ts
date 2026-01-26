@@ -26,6 +26,20 @@ export async function initializeDatabase(): Promise<void> {
 export async function seedInitialAdmin(): Promise<void> {
   try {
     const bcrypt = require("bcryptjs");
+    const isProd = process.env.NODE_ENV === "production";
+
+    if (isProd && process.env.SEED_ADMIN !== "true") {
+      console.log("ℹ️  Seed de admin desativado em produção");
+      return;
+    }
+
+    const seedEmail = process.env.SEED_ADMIN_EMAIL || "admin@webfusionlab.pt";
+    const seedPassword = process.env.SEED_ADMIN_PASSWORD || "admin123";
+
+    if (isProd && (!process.env.SEED_ADMIN_EMAIL || !process.env.SEED_ADMIN_PASSWORD)) {
+      console.error("❌ SEED_ADMIN_EMAIL e SEED_ADMIN_PASSWORD são obrigatórios para seed em produção");
+      return;
+    }
 
     // Verificar se já existe admin
     const result = await query("SELECT COUNT(*) FROM admins");
@@ -35,18 +49,20 @@ export async function seedInitialAdmin(): Promise<void> {
     }
 
     // Criar admin padrão
-    const password = await bcrypt.hash("admin123", 10);
+    const password = await bcrypt.hash(seedPassword, 10);
 
     await query(
       `INSERT INTO admins (email, password, name) 
        VALUES ($1, $2, $3)`,
-      ["admin@webfusionlab.pt", password, "Admin"],
+      [seedEmail, password, "Admin"],
     );
 
     console.log("✅ Admin padrão criado!");
-    console.log("📧 Email: admin@webfusionlab.pt");
-    console.log("🔑 Senha: admin123");
-    console.log("⚠️  ALTERE A SENHA IMEDIATAMENTE!");
+    console.log(`📧 Email: ${seedEmail}`);
+    if (!isProd) {
+      console.log(`🔑 Senha: ${seedPassword}`);
+      console.log("⚠️  ALTERE A SENHA IMEDIATAMENTE!");
+    }
   } catch (error) {
     console.error("❌ Erro ao criar admin padrão:", error);
   }

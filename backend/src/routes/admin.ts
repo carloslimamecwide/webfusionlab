@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth";
+import { authLimiter } from "../middleware/rateLimiter";
 import {
   loginAdmin,
   registerAdmin,
@@ -36,7 +37,7 @@ const router = Router();
  *       401:
  *         description: Credenciais inválidas
  */
-router.post("/login", loginAdmin);
+router.post("/login", authLimiter, loginAdmin);
 
 /**
  * @swagger
@@ -69,7 +70,7 @@ router.post("/login", loginAdmin);
  *       500:
  *         description: Erro ao criar admin
  */
-router.post("/register", registerAdmin);
+router.post("/register", authLimiter, registerAdmin);
 
 /**
  * @swagger

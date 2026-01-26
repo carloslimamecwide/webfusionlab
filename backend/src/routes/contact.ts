@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authMiddleware } from "../middleware/auth";
 import { emailLimiter } from "../middleware/rateLimiter";
 import { sendContactMessage, replyToContact } from "../controllers/contactController";
 
@@ -25,6 +26,8 @@ const router = Router();
  *       - Rate Limit: Máx 5 contactos por IP em 15 minutos
  *     tags:
  *       - Contacto
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -207,6 +210,6 @@ router.post("/send", emailLimiter, sendContactMessage);
  *                   type: string
  *                   example: Erro ao enviar resposta
  */
-router.post("/reply", emailLimiter, replyToContact);
+router.post("/reply", authMiddleware, emailLimiter, replyToContact);
 
 export default router;

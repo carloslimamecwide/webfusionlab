@@ -12,8 +12,14 @@ import publicRoutes from "./routes/public";
 import emailService from "./services/emailService";
 import { initializeDatabase, seedInitialAdmin } from "./config/initDb";
 
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET deve estar definido em produção");
+}
+
 const app: Express = express();
-app.set("trust proxy", 1);
+if (process.env.TRUST_PROXY === "true") {
+  app.set("trust proxy", 1);
+}
 const port = process.env.PORT || 3000;
 const isDev = process.env.NODE_ENV === "development";
 

@@ -9,12 +9,33 @@ interface ContactRequest {
   phone?: string;
 }
 
+const escapeMap: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => escapeMap[char]);
+}
+
+function sanitizeHeaderValue(value: string): string {
+  return value.replace(/[\r\n]+/g, " ").trim();
+}
+
 export async function sendContactMessage(req: Request, res: Response): Promise<Response | void> {
   try {
     const { name, email, subject, message, phone } = req.body as ContactRequest;
+    const nameTrimmed = typeof name === "string" ? name.trim() : "";
+    const emailTrimmed = typeof email === "string" ? email.trim() : "";
+    const subjectTrimmed = typeof subject === "string" ? subject.trim() : "";
+    const messageTrimmed = typeof message === "string" ? message.trim() : "";
+    const phoneTrimmed = typeof phone === "string" ? phone.trim() : "";
 
     // Validações
-    if (!name || !email || !subject || !message) {
+    if (!nameTrimmed || !emailTrimmed || !subjectTrimmed || !messageTrimmed) {
       return res.status(400).json({
         success: false,
         error: 'Os campos "name", "email", "subject" e "message" são obrigatórios',
@@ -23,12 +44,19 @@ export async function sendContactMessage(req: Request, res: Response): Promise<R
 
     // Validação básica de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(emailTrimmed)) {
       return res.status(400).json({
         success: false,
         error: "Email inválido",
       });
     }
+
+    const safeName = escapeHtml(nameTrimmed);
+    const safeEmail = escapeHtml(emailTrimmed);
+    const safeSubject = escapeHtml(subjectTrimmed);
+    const safeMessage = escapeHtml(messageTrimmed).replace(/\r?\n/g, "<br>");
+    const safePhone = phoneTrimmed ? escapeHtml(phoneTrimmed) : "Não fornecido";
+    const subjectHeader = sanitizeHeaderValue(subjectTrimmed);
 
     // Envia email para o administrador
     const adminHtml = `
@@ -54,19 +82,19 @@ export async function sendContactMessage(req: Request, res: Response): Promise<R
           <div class="content">
             <h2>Detalhes do Contacto:</h2>
             <div class="details">
-              <p><strong>Nome:</strong> ${name}</p>
-              <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-              <p><strong>Telefone:</strong> ${phone || "Não fornecido"}</p>
-              <p><strong>Assunto:</strong> ${subject}</p>
+              <p><strong>Nome:</strong> ${safeName}</p>
+              <p><strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
+              <p><strong>Telefone:</strong> ${safePhone}</p>
+              <p><strong>Assunto:</strong> ${safeSubject}</p>
               <p><strong>Data/Hora:</strong> ${new Date().toLocaleString("pt-BR")}</p>
             </div>
             
             <h3>Mensagem:</h3>
             <div class="message-box">
-              <p>${message.replace(/\n/g, "<br>")}</p>
+              <p>${safeMessage}</p>
             </div>
             
-            <p><strong>Responda diretamente para:</strong> <a href="mailto:${email}">${email}</a></p>
+            <p><strong>Responda diretamente para:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
             
             <div class="footer">
               <p>Este é um email automático gerado pelo formulário de contacto.</p>
@@ -81,7 +109,7 @@ export async function sendContactMessage(req: Request, res: Response): Promise<R
     // Envia email para o administrador
     const adminResult = await emailService.sendEmail({
       to: process.env.CONTACT_ADMIN_EMAIL || "developer.mecwide@gmail.com",
-      subject: `[CONTACTO] ${subject}`,
+      subject: `[CONTACTO] ${subjectHeader}`,
       html: adminHtml,
     });
 
@@ -113,12 +141,12 @@ export async function sendContactMessage(req: Request, res: Response): Promise<R
             <h1>✓ Contacto Recebido</h1>
           </div>
           <div class="content">
-            <p>Olá ${name},</p>
+            <p>Olá ${safeName},</p>
             <p>Obrigado por nos contactar! Recebemos a sua mensagem com sucesso.</p>
             
             <div class="details">
               <h3>Resumo do seu contacto:</h3>
-              <p><strong>Assunto:</strong> ${subject}</p>
+              <p><strong>Assunto:</strong> ${safeSubject}</p>
               <p><strong>Data/Hora:</strong> ${new Date().toLocaleString("pt-BR")}</p>
             </div>
             
@@ -137,7 +165,7 @@ export async function sendContactMessage(req: Request, res: Response): Promise<R
 
     // Envia confirmação
     await emailService.sendEmail({
-      to: email,
+      to: emailTrimmed,
       subject: "Confirmação: Seu contacto foi recebido",
       html: userHtml,
     });
@@ -158,9 +186,12 @@ export async function sendContactMessage(req: Request, res: Response): Promise<R
 export async function replyToContact(req: Request, res: Response): Promise<Response | void> {
   try {
     const { email, subject, message } = req.body;
+    const emailTrimmed = typeof email === "string" ? email.trim() : "";
+    const subjectTrimmed = typeof subject === "string" ? subject.trim() : "";
+    const messageTrimmed = typeof message === "string" ? message.trim() : "";
 
     // Validações
-    if (!email || !subject || !message) {
+    if (!emailTrimmed || !subjectTrimmed || !messageTrimmed) {
       return res.status(400).json({
         success: false,
         error: 'Os campos "email", "subject" e "message" são obrigatórios',
@@ -169,12 +200,16 @@ export async function replyToContact(req: Request, res: Response): Promise<Respo
 
     // Validação básica de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(emailTrimmed)) {
       return res.status(400).json({
         success: false,
         error: "Email inválido",
       });
     }
+
+    const safeSubject = escapeHtml(subjectTrimmed);
+    const safeMessage = escapeHtml(messageTrimmed).replace(/\r?\n/g, "<br>");
+    const subjectHeader = sanitizeHeaderValue(subjectTrimmed);
 
     // Template de resposta/feedback
     const replyHtml = `
@@ -201,8 +236,8 @@ export async function replyToContact(req: Request, res: Response): Promise<Respo
             <p>Recebemos o seu contacto e analisámos a sua solicitação.</p>
             
             <div class="message-box">
-              <h3>${subject}</h3>
-              <p>${message.replace(/\n/g, "<br>")}</p>
+              <h3>${safeSubject}</h3>
+              <p>${safeMessage}</p>
             </div>
             
             <p>Se tiver mais dúvidas, não hesite em contactar-nos novamente.</p>
@@ -219,8 +254,8 @@ export async function replyToContact(req: Request, res: Response): Promise<Respo
 
     // Envia resposta/feedback
     const result = await emailService.sendEmail({
-      to: email,
-      subject: subject,
+      to: emailTrimmed,
+      subject: subjectHeader,
       html: replyHtml,
     });
 

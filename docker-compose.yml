@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: webfusionlab-postgres
+    env_file:
+      - ./backend/.env.production
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    networks:
+      - webfusionlab
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: webfusionlab-backend
+    env_file:
+      - ./backend/.env.production
+    environment:
+      - TRUST_PROXY=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - webfusionlab
+    ports:
+      - "127.0.0.1:3001:3001"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: webfusionlab-frontend
+    env_file:
+      - ./frontend/.env.production
+    restart: unless-stopped
+    networks:
+      - webfusionlab
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  webfusionlab:
+    driver: bridge

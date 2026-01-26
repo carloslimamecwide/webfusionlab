@@ -11,13 +11,14 @@ if [ -z "$1" ]; then
 fi
 
 SERVER=$1
-REMOTE_PATH="/var/www/webfusionlab/backend"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REMOTE_PATH="/var/www/webfusionlab"
 
 echo "🚀 Iniciando deploy para $SERVER..."
 
-# Build local
-echo "📦 Building aplicação localmente..."
-npm run build
+# Build local (opcional)
+echo "📦 Build local opcional (ignorado - build ocorre no servidor via Docker)"
 
 # Criar diretório remoto se não existir
 echo "📁 Preparando diretório remoto..."
@@ -28,26 +29,27 @@ echo "📤 Enviando arquivos..."
 rsync -avz --progress \
     --exclude 'node_modules' \
     --exclude 'dist' \
+    --exclude '.next' \
     --exclude '.git' \
     --exclude '*.log' \
     --exclude '.DS_Store' \
     --exclude '.env' \
-    ./ $SERVER:$REMOTE_PATH/
+    "$PROJECT_ROOT/" $SERVER:$REMOTE_PATH/
 
 # Executar comandos remotos
 echo "🐳 Iniciando containers no servidor..."
 ssh $SERVER << 'EOF'
-    cd /var/www/webfusionlab/backend
-    # Criar .env se não existir
-    if [ ! -f .env.production ]; then
+    cd /var/www/webfusionlab
+    # Verificar envs essenciais
+    if [ ! -f backend/.env.production ] || [ ! -f frontend/.env.production ]; then
         echo "⚠️  Arquivo .env.production não encontrado!"
         echo "📝 Configure as variáveis de ambiente antes de continuar"
         exit 1
     fi
-    docker-compose -f docker-compose.prod.yml down
-    docker-compose -f docker-compose.prod.yml up -d --build
+    docker-compose down
+    docker-compose up -d --build
     echo "✅ Deploy concluído!"
-    docker-compose -f docker-compose.prod.yml ps
+    docker-compose ps
 EOF
 
 echo "🎉 Deploy finalizado com sucesso!"

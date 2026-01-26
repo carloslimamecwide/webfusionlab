@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 
 export default function Navbar() {
@@ -25,11 +26,32 @@ export default function Navbar() {
     { href: "/projects", label: "Projetos" },
   ];
 
+  const panelVariants = {
+    hidden: { opacity: 0, y: -18, scale: 0.98 },
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { type: "spring", stiffness: 240, damping: 22 },
+    },
+    exit: { opacity: 0, y: -12, scale: 0.98, transition: { duration: 0.18 } },
+  } as const;
+
+  const listVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 0.04 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -6 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+  };
+
   return (
     <nav
       className={`
         fixed top-0 w-full z-50 transition-all duration-300
-        ${isScrolled || isMobileMenuOpen ? "bg-black/70 backdrop-blur-xl border-b border-white/5" : "bg-transparent"}
+        ${isScrolled || isMobileMenuOpen ? "bg-black/70 backdrop-blur-xl" : "bg-transparent"}
       `}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,6 +86,8 @@ export default function Navbar() {
             className="md:hidden text-[color:var(--foreground)] p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             <svg
               className="w-6 h-6"
@@ -80,27 +104,58 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-white/10 bg-black/90 px-2 py-4 backdrop-blur-xl space-y-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`block py-3 text-sm font-medium tracking-[0.08em] transition-colors ${
-                  pathname === link.href
-                    ? "text-[color:var(--accent)]"
-                    : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
-                }`}
+        <AnimatePresence>
+          {isMobileMenuOpen ? (
+            <>
+              <motion.div
+                className="fixed inset-0 z-40 bg-black/55 md:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 onClick={() => setIsMobileMenuOpen(false)}
+              />
+              <motion.div
+                id="mobile-menu"
+                className="fixed left-0 right-0 top-16 z-50 md:hidden"
+                variants={panelVariants}
+                initial="hidden"
+                animate="show"
+                exit="exit"
               >
-                {link.label}
-              </Link>
-            ))}
-            <Button href="/contact" variant="secondary" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
-              Contactar
-            </Button>
-          </div>
-        )}
+                <div className="mx-4 rounded-2xl border border-[color:var(--border-strong)] bg-[color:var(--background)] px-4 py-5 shadow-[var(--shadow-soft)] space-y-2">
+                  <motion.div variants={listVariants} initial="hidden" animate="show">
+                    {navLinks.map((link) => (
+                      <motion.div key={link.href} variants={itemVariants}>
+                        <Link
+                          href={link.href}
+                          className={`block rounded-lg px-3 py-2 text-sm font-medium tracking-[0.08em] transition-colors ${
+                            pathname === link.href
+                              ? "text-[color:var(--accent)]"
+                              : "text-[color:var(--muted)] hover:text-[color:var(--foreground)] hover:bg-white/5"
+                          }`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      </motion.div>
+                    ))}
+                    <motion.div variants={itemVariants} className="pt-2">
+                      <Button
+                        href="/contact"
+                        variant="secondary"
+                        className="w-full"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Contactar
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </>
+          ) : null}
+        </AnimatePresence>
       </div>
     </nav>
   );
