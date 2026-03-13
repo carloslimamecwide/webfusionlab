@@ -1,6 +1,6 @@
 # CI/CD de Producao com GitHub Actions + Self-Hosted Runner
 
-Este guia substitui o fluxo antigo baseado em `git pull` manual no servidor e Nginx no host. A partir daqui, o deploy de producao passa a acontecer localmente no servidor atraves de um `self-hosted runner`, sem SSH inbound para deploy.
+Este guia substitui o fluxo antigo baseado em `git pull` manual no servidor e Nginx no host. A partir daqui, o deploy de producao passa a acontecer localmente no servidor atraves de um `self-hosted runner`, sem SSH inbound para deploy teste1.
 
 ## 1. Estrategia de branches recomendada
 
