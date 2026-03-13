@@ -63,11 +63,13 @@ export default function Testimonials() {
               variants={itemVariants}
               className="relative overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-8 shadow-[var(--shadow-strong)] md:col-span-2"
             >
-              <div className="absolute -right-6 -top-12 text-[120px] leading-none text-white/10">"</div>
+              <div className="absolute -right-6 -top-12 text-[120px] leading-none text-white/10">&ldquo;</div>
               <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]">
                 Depoimento principal
               </div>
-              <p className="mt-5 text-base text-[color:var(--muted)]">"{leadTestimonial.text}"</p>
+              <p className="mt-5 text-base text-[color:var(--muted)]">
+                &ldquo;{leadTestimonial.text}&rdquo;
+              </p>
               <footer className="mt-8 space-y-1 text-xs uppercase tracking-[0.24em]">
                 <div className="text-[color:var(--foreground)]">{leadTestimonial.name}</div>
                 <div className="text-[color:var(--muted)]">{`${leadTestimonial.role} - ${leadTestimonial.company}`}</div>
@@ -81,7 +83,7 @@ export default function Testimonials() {
               className="relative overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-soft)]"
             >
               <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)]">Depoimento</div>
-              <p className="mt-4 text-sm text-[color:var(--muted)]">"{testimonial.text}"</p>
+              <p className="mt-4 text-sm text-[color:var(--muted)]">&ldquo;{testimonial.text}&rdquo;</p>
               <footer className="mt-6 space-y-1 text-xs uppercase tracking-[0.24em]">
                 <div className="text-[color:var(--foreground)]">{testimonial.name}</div>
                 <div className="text-[color:var(--muted)]">{`${testimonial.role} - ${testimonial.company}`}</div>

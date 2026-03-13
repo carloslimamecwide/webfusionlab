@@ -1,20 +1,29 @@
-# Build stage
-FROM node:20-alpine AS builder
+# Install dependencies once to keep the final image deterministic.
+FROM node:20-alpine AS deps
 
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
 
-COPY . .
-RUN npm run build
-
-# Production stage
-FROM node:18-alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
@@ -27,6 +36,7 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=5 \
+  CMD wget -q --spider http://127.0.0.1:3000/ || exit 1
 
 CMD ["node", "server.js"]

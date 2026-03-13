@@ -1,19 +1,18 @@
-version: "3.8"
-
 services:
   postgres:
-    image: postgres:15-alpine
-    container_name: webfusionlab-postgres
-    env_file:
-      - ./backend/.env.production
+    image: postgres:16-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-webfusionlab}-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-webfusionlab}
+      POSTGRES_USER: ${DB_USER:-webfusionlab}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backend/migrations:/docker-entrypoint-initdb.d
     restart: unless-stopped
     networks:
-      - webfusionlab
+      - production
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,37 +21,71 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: webfusionlab-backend
+    container_name: ${COMPOSE_PROJECT_NAME:-webfusionlab}-backend
     env_file:
       - ./backend/.env.production
     environment:
-      - TRUST_PROXY=true
+      TRUST_PROXY: "true"
     depends_on:
       postgres:
         condition: service_healthy
     restart: unless-stopped
     networks:
-      - webfusionlab
-    ports:
-      - "127.0.0.1:3001:3001"
+      - production
+    expose:
+      - "3001"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3001/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: webfusionlab-frontend
+    container_name: ${COMPOSE_PROJECT_NAME:-webfusionlab}-frontend
     env_file:
       - ./frontend/.env.production
     restart: unless-stopped
     networks:
-      - webfusionlab
+      - production
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-webfusionlab}-nginx
+    depends_on:
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"
+      - "${NGINX_HTTP_PORT:-80}:80"
+    networks:
+      - production
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
   postgres_data:
     driver: local
 
 networks:
-  webfusionlab:
+  production:
     driver: bridge
