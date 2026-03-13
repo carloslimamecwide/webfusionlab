@@ -73,10 +73,13 @@ services:
     restart: unless-stopped
     ports:
       - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - "${NGINX_CERTS_PATH:-/opt/webfusionlab/nginx-certs}:/etc/nginx/certs:ro"
     networks:
       - production
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1"]
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/healthz || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5

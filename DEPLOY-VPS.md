@@ -27,7 +27,9 @@ Arquitetura simples e robusta para um developer sozinho:
 - O GitHub Actions agenda o job no runner com labels `self-hosted`, `linux`, `production`.
 - O runner esta instalado no proprio servidor de producao, ou numa maquina interna com acesso ao Docker do servidor.
 - O job faz `checkout`, gera os ficheiros `.env.production`, valida o codigo, corre testes, faz build das imagens e executa `docker compose up -d`.
-- O `nginx` corre num container separado e faz reverse proxy para:
+- O `nginx` do WebFusionLab corre num container separado e publica `80/443`.
+- O TLS termina no proprio container `nginx`.
+- O `nginx` do WebFusionLab faz reverse proxy para:
   - `frontend:3000`
   - `backend:3001`
 - `frontend`, `backend`, `nginx` e `postgres` correm na mesma rede Docker privada.
@@ -47,7 +49,7 @@ Self-hosted runner no servidor de producao
         v
 docker compose up -d --build
         |
-        +--> nginx (porta publica)
+        +--> nginx (porta publica 80/443)
         +--> frontend (interno)
         +--> backend (interno)
         +--> postgres (interno)
@@ -76,7 +78,7 @@ Ficheiro: [`docker-compose.yml`](./docker-compose.yml)
 
 Servicos incluidos:
 
-- `nginx`: reverse proxy publico.
+- `nginx`: reverse proxy publico com TLS.
 - `frontend`: Next.js em modo standalone.
 - `backend`: API Node/TypeScript.
 - `postgres`: base de dados local do stack.
@@ -84,7 +86,9 @@ Servicos incluidos:
 Notas:
 
 - `frontend` e `backend` usam `expose`, nao `ports`, para ficarem acessiveis apenas dentro da rede Docker.
-- `nginx` e o unico servico com porta publicada.
+- `nginx` e o unico servico com portas publicadas.
+- `80` serve redirect e healthcheck.
+- `443` serve trafego HTTPS publico.
 - Foram adicionados `healthchecks` para suportar `docker compose up --wait`.
 
 ## 5. Dockerfile do frontend
@@ -123,6 +127,10 @@ O `nginx` corre num container dedicado e faz:
 
 - `webfusionlab.pt` e `www.webfusionlab.pt` -> `frontend:3000`
 - `api.webfusionlab.pt` -> `backend:3001`
+- TLS no proprio container usando:
+  - `origin.crt`
+  - `origin.key`
+  montados a partir da VPS
 
 Se mudares os dominios, adapta apenas o `server_name` em [`nginx/default.conf`](./nginx/default.conf) e as variaveis publicas do frontend.
 
@@ -134,6 +142,8 @@ Usa o Environment `production` no GitHub e coloca la as seguintes configuracoes.
 
 - `PROD_COMPOSE_PROJECT_NAME=webfusionlab`
 - `PROD_NGINX_HTTP_PORT=80`
+- `PROD_NGINX_HTTPS_PORT=443`
+- `PROD_NGINX_CERTS_PATH=/opt/webfusionlab/nginx-certs`
 - `PROD_FRONTEND_SITE_URL=https://webfusionlab.pt`
 - `PROD_FRONTEND_API_URL=https://api.webfusionlab.pt`
 - `PROD_DB_NAME=webfusionlab`
@@ -170,6 +180,35 @@ Com esta configuracao, o workflow gera automaticamente:
 - `.env.production`
   - `COMPOSE_PROJECT_NAME=webfusionlab`
   - `NGINX_HTTP_PORT=80`
+  - `NGINX_HTTPS_PORT=443`
+  - `NGINX_CERTS_PATH=/opt/webfusionlab/nginx-certs`
+
+### Certificados na VPS
+
+Os certificados nao ficam no GitHub. Ficam apenas no servidor em:
+
+```text
+/opt/webfusionlab/nginx-certs/origin.crt
+/opt/webfusionlab/nginx-certs/origin.key
+```
+
+Cria a pasta e define permissoes:
+
+```bash
+sudo mkdir -p /opt/webfusionlab/nginx-certs
+sudo chown -R root:root /opt/webfusionlab/nginx-certs
+sudo chmod 700 /opt/webfusionlab/nginx-certs
+sudo chmod 644 /opt/webfusionlab/nginx-certs/origin.crt
+sudo chmod 600 /opt/webfusionlab/nginx-certs/origin.key
+```
+
+O certificado deve vir do `Cloudflare -> SSL/TLS -> Origin Server`.
+
+Em `Cloudflare -> SSL/TLS -> Overview`, usa:
+
+```text
+Full (strict)
+```
 
 Ficheiros de exemplo no repo:
 
@@ -271,7 +310,7 @@ docker volume ls
 
 ## 11. Explicacao do fluxo completo de deploy
 
-1. Fazes merge de `develop` para `master`.
+1. Fazes merge de `develop` para `main`.
 2. O GitHub dispara o workflow de producao quando entra um novo commit em `main`.
 3. O job e enviado para o runner com labels `self-hosted`, `linux`, `production`.
 4. O runner executa localmente no servidor.
@@ -293,7 +332,7 @@ docker volume ls
 
 ### Seguranca
 
-- Protege `master` para aceitar apenas PRs e exigir checks verdes.
+- Protege `main` para aceitar apenas PRs e exigir checks verdes.
 - Usa o Environment `production` no GitHub para isolar os segredos.
 - Mantem o runner dedicado a producao, sem workloads de desenvolvimento.
 - Garante que o utilizador do runner esta apenas no grupo `docker`.
