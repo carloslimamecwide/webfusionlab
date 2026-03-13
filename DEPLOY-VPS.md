@@ -1,210 +1,314 @@
-# Deploy VPS (webfusionlab.pt + api.webfusionlab.pt)
+# CI/CD de Producao com GitHub Actions + Self-Hosted Runner
 
-Guia passo a passo via CLI, assumindo um VPS limpo e deploy via repo.
+Este guia substitui o fluxo antigo baseado em `git pull` manual no servidor e Nginx no host. A partir daqui, o deploy de producao passa a acontecer localmente no servidor atraves de um `self-hosted runner`, sem SSH inbound para deploy.
 
-## 0) DNS (antes do VPS)
+## 1. Estrategia de branches recomendada
 
-- A `webfusionlab.pt` -> IP do VPS
-- A `www.webfusionlab.pt` -> IP do VPS
-- A `api.webfusionlab.pt` -> IP do VPS
+- `develop`: branch de trabalho diario.
+- `master`: branch de producao.
+- Trabalha sempre em `develop`.
+- Quando estiver pronto para publicar, abre um PR de `develop` para `master`.
+- O merge em `master` dispara automaticamente o workflow [`.github/workflows/production.yml`](./.github/workflows/production.yml).
+- Nao faças commits diretos em `master`; protege a branch para aceitar apenas merges via PR.
 
-## 1) Atualizar o servidor e instalar dependencias basicas
+Fluxo recomendado:
 
-```bash
-sudo apt update
-sudo apt upgrade -y
-sudo apt install -y git curl ufw nginx
+1. Desenvolver e validar em `develop`.
+2. Abrir PR `develop -> master`.
+3. Fazer merge.
+4. O runner self-hosted no servidor executa validacao, build e deploy local.
+
+## 2. Arquitetura recomendada
+
+Arquitetura simples e robusta para um developer sozinho:
+
+- GitHub recebe o merge em `master`.
+- O GitHub Actions agenda o job no runner com labels `self-hosted`, `linux`, `production`.
+- O runner esta instalado no proprio servidor de producao, ou numa maquina interna com acesso ao Docker do servidor.
+- O job faz `checkout`, gera os ficheiros `.env.production`, valida o codigo, corre testes, faz build das imagens e executa `docker compose up -d`.
+- O `nginx` corre num container separado e faz reverse proxy para:
+  - `frontend:3000`
+  - `backend:3001`
+- `frontend`, `backend`, `nginx` e `postgres` correm na mesma rede Docker privada.
+- Apenas o `nginx` publica porta para o exterior.
+
+Resumo da topologia:
+
+```text
+GitHub (push em master)
+        |
+        v
+GitHub Actions
+        |
+        v
+Self-hosted runner no servidor de producao
+        |
+        v
+docker compose up -d --build
+        |
+        +--> nginx (porta publica)
+        +--> frontend (interno)
+        +--> backend (interno)
+        +--> postgres (interno)
 ```
 
-Ativar Nginx no boot:
+## 3. Workflow de producao
+
+Ficheiro: [`.github/workflows/production.yml`](./.github/workflows/production.yml)
+
+O workflow faz:
+
+1. Trigger apenas em `push` para `master`.
+2. Execucao apenas no runner `self-hosted`, `linux`, `production`.
+3. Checkout do repositorio.
+4. Geracao local dos `.env.production` a partir de GitHub Secrets/Variables.
+5. Validacao de frontend e backend.
+6. Execucao de testes quando existirem.
+7. Build de frontend e backend.
+8. Build das imagens Docker.
+9. Deploy local via `docker compose up -d --remove-orphans --wait`.
+
+## 4. Docker Compose de producao
+
+Ficheiro: [`docker-compose.yml`](./docker-compose.yml)
+
+Servicos incluidos:
+
+- `nginx`: reverse proxy publico.
+- `frontend`: Next.js em modo standalone.
+- `backend`: API Node/TypeScript.
+- `postgres`: base de dados local do stack.
+
+Notas:
+
+- `frontend` e `backend` usam `expose`, nao `ports`, para ficarem acessiveis apenas dentro da rede Docker.
+- `nginx` e o unico servico com porta publicada.
+- Foram adicionados `healthchecks` para suportar `docker compose up --wait`.
+
+## 5. Dockerfile do frontend
+
+Ficheiro: [`frontend/Dockerfile`](./frontend/Dockerfile)
+
+Boas praticas aplicadas:
+
+- multi-stage build;
+- Node 20 para alinhar com Next.js 16;
+- imagem final reduzida;
+- utilizador nao-root;
+- `HEALTHCHECK`;
+- `NEXT_TELEMETRY_DISABLED=1`.
+
+## 6. Dockerfile do backend
+
+Ficheiro: [`backend/Dockerfile`](./backend/Dockerfile)
+
+Boas praticas aplicadas:
+
+- multi-stage build;
+- dependencias de runtime separadas das de build;
+- correcoes na copia das migracoes (`src/migrations`);
+- utilizador nao-root;
+- `HEALTHCHECK`.
+
+## 7. Configuracao do Nginx
+
+Ficheiros:
+
+- [`nginx/Dockerfile`](./nginx/Dockerfile)
+- [`nginx/default.conf`](./nginx/default.conf)
+
+O `nginx` corre num container dedicado e faz:
+
+- `webfusionlab.pt` e `www.webfusionlab.pt` -> `frontend:3000`
+- `api.webfusionlab.pt` -> `backend:3001`
+
+Se mudares os dominios, adapta apenas o `server_name` em [`nginx/default.conf`](./nginx/default.conf) e as variaveis publicas do frontend.
+
+## 8. Secrets e variables necessarios
+
+Usa o Environment `production` no GitHub e coloca la as seguintes configuracoes.
+
+### Variables
+
+- `PROD_COMPOSE_PROJECT_NAME=webfusionlab`
+- `PROD_NGINX_HTTP_PORT=80`
+- `PROD_FRONTEND_SITE_URL=https://webfusionlab.pt`
+- `PROD_FRONTEND_API_URL=https://api.webfusionlab.pt`
+- `PROD_DB_NAME=webfusionlab`
+- `PROD_DB_USER=webfusionlab`
+- `PROD_SMTP_HOST=smtp.gmail.com`
+- `PROD_SMTP_PORT=587`
+- `PROD_SENDER_EMAIL=noreply@webfusionlab.pt`
+- `PROD_SENDER_NAME=WebFusionLab`
+- `PROD_CONTACT_ADMIN_EMAIL=admin@webfusionlab.pt`
+- `PROD_SEED_ADMIN=false`
+- `PROD_SEED_ADMIN_EMAIL=admin@webfusionlab.pt`
+
+### Secrets
+
+- `PROD_DB_PASSWORD=<password_forte_da_base_de_dados>`
+- `PROD_SMTP_USER=<conta_smtp_real>`
+- `PROD_SMTP_PASSWORD=<password_ou_app_password_smtp>`
+- `PROD_JWT_SECRET=<segredo_longo_e_aleatorio>`
+- `PROD_ADMIN_REGISTRATION_TOKEN=<token_longo_e_aleatorio>`
+- `PROD_SEED_ADMIN_PASSWORD=<senha_inicial_admin_ou_valor_aleatorio>`
+
+### Resultado esperado destes valores
+
+Com esta configuracao, o workflow gera automaticamente:
+
+- `frontend/.env.production`
+  - `NEXT_PUBLIC_SITE_URL=https://webfusionlab.pt`
+  - `NEXT_PUBLIC_API_URL=https://api.webfusionlab.pt`
+- `backend/.env.production`
+  - `CONTACT_ADMIN_EMAIL=admin@webfusionlab.pt`
+  - `DB_HOST=postgres`
+  - `DB_NAME=webfusionlab`
+  - `DB_USER=webfusionlab`
+- `.env.production`
+  - `COMPOSE_PROJECT_NAME=webfusionlab`
+  - `NGINX_HTTP_PORT=80`
+
+Ficheiros de exemplo no repo:
+
+- [`.env.production.example`](./.env.production.example)
+- [`frontend/.env.production.example`](./frontend/.env.production.example)
+- [`backend/.env.production.example`](./backend/.env.production.example)
+
+## 9. Passos para instalar e registar o self-hosted runner
+
+Assume Ubuntu/Debian e um utilizador dedicado `deploy`.
+
+### 9.1 Criar utilizador e preparar Docker
 
 ```bash
-sudo systemctl enable nginx
+sudo adduser --disabled-password --gecos "" deploy
+sudo usermod -aG docker deploy
+sudo mkdir -p /opt/actions-runner/webfusionlab-production
+sudo chown -R deploy:deploy /opt/actions-runner
 ```
 
-## 2) Instalar Docker e Docker Compose
+### 9.2 Instalar Docker Engine + Docker Compose plugin
 
 ```bash
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo usermod -aG docker $USER
+curl -fsSL https://get.docker.com | sudo sh
+sudo apt-get update
+sudo apt-get install -y docker-compose-plugin
+sudo systemctl enable docker
+sudo systemctl start docker
 ```
 
-Reinicia a sessao (logout/login) para aplicar o grupo `docker`.
+### 9.3 Instalar o runner
 
-Instalar docker-compose:
+No GitHub:
+
+1. Abre o repositorio.
+2. Vai a `Settings -> Actions -> Runners`.
+3. Clica em `New self-hosted runner`.
+4. Escolhe `Linux x64`.
+5. Copia o comando e o token gerado pelo GitHub.
+
+No servidor:
 
 ```bash
-sudo apt install -y docker-compose
+sudo su - deploy
+cd /opt/actions-runner/webfusionlab-production
+
+curl -o actions-runner-linux-x64-<VERSION>.tar.gz -L https://github.com/actions/runner/releases/download/v<VERSION>/actions-runner-linux-x64-<VERSION>.tar.gz
+tar xzf actions-runner-linux-x64-<VERSION>.tar.gz
+
+./config.sh \
+  --url https://github.com/<OWNER>/<REPO> \
+  --token <RUNNER_REGISTRATION_TOKEN> \
+  --name webfusionlab-production \
+  --labels self-hosted,linux,production \
+  --work _work \
+  --unattended
 ```
 
-Validar:
+### 9.4 Instalar o runner como service
+
+```bash
+cd /opt/actions-runner/webfusionlab-production
+sudo ./svc.sh install deploy
+sudo ./svc.sh start
+sudo ./svc.sh status
+```
+
+## 10. Comandos necessarios no servidor
+
+Instalacao base:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y curl git ca-certificates
+curl -fsSL https://get.docker.com | sudo sh
+sudo apt-get install -y docker-compose-plugin
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
+Verificacao:
 
 ```bash
 docker --version
-docker-compose --version
+docker compose version
+id deploy
+sudo systemctl status actions.runner.*
 ```
 
-## 3) Firewall (UFW)
+Diagnostico de deploy:
 
 ```bash
-sudo ufw allow OpenSSH
-sudo ufw allow "Nginx Full"
-sudo ufw --force enable
-sudo ufw status
+cd /opt/actions-runner/webfusionlab-production/_work/webfusinlab/webfusinlab
+docker compose --env-file .env.production ps
+docker compose --env-file .env.production logs --tail=200
+docker image ls
+docker volume ls
 ```
 
-## 4) Clonar o repo no servidor
+## 11. Explicacao do fluxo completo de deploy
 
-```bash
-sudo mkdir -p /var/www
-sudo chown -R $USER:$USER /var/www
-cd /var/www
-git clone <URL_DO_REPO> webfusionlab
-cd /var/www/webfusionlab
-```
+1. Fazes merge de `develop` para `master`.
+2. O GitHub dispara o workflow de producao.
+3. O job e enviado para o runner com labels `self-hosted`, `linux`, `production`.
+4. O runner executa localmente no servidor.
+5. O workflow faz `checkout` do monorepo.
+6. O workflow gera:
+   - `.env.production`
+   - `frontend/.env.production`
+   - `backend/.env.production`
+7. O frontend e validado com `lint`.
+8. O backend e validado com `tsc --noEmit`.
+9. Os testes sao corridos com `npm run test --if-present`.
+10. O frontend e o backend sao compilados.
+11. O `docker compose` valida a configuracao.
+12. As imagens de `nginx`, `frontend` e `backend` sao reconstruidas localmente.
+13. O `docker compose up -d --remove-orphans --wait` atualiza os containers em producao.
+14. O Nginx continua a ser a unica porta publica e encaminha para frontend/backend internos.
 
-## 5) Configurar variaveis de ambiente
+## 12. Sugestoes de seguranca e manutencao
 
-Backend:
+### Seguranca
 
-```bash
-nano /var/www/webfusionlab/backend/.env.production
-```
+- Protege `master` para aceitar apenas PRs e exigir checks verdes.
+- Usa o Environment `production` no GitHub para isolar os segredos.
+- Mantem o runner dedicado a producao, sem workloads de desenvolvimento.
+- Garante que o utilizador do runner esta apenas no grupo `docker`.
+- Publica apenas a porta do `nginx`; nao abras `3000`, `3001` ou `5432`.
+- Usa segredos fortes para `JWT_SECRET`, `DB_PASSWORD` e `ADMIN_REGISTRATION_TOKEN`.
+- Ativa TLS no edge: um load balancer interno, proxy externo ou certificados montados no `nginx`.
 
-Exemplo (ajusta os valores reais):
+### Manutencao
 
-```
-NODE_ENV=production
-PORT=3001
-DB_HOST=postgres
-DB_PORT=5432
-DB_NAME=webfusionlab
-DB_USER=webfusionlab
-DB_PASSWORD=troca_isto
-POSTGRES_DB=webfusionlab
-POSTGRES_USER=webfusionlab
-POSTGRES_PASSWORD=troca_isto
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=teu_email
-SMTP_PASSWORD=teu_app_password
-SENDER_EMAIL=noreply@webfusionlab.pt
-SENDER_NAME=WebFusionLab
-CONTACT_ADMIN_EMAIL=admin@webfusionlab.pt
-JWT_SECRET=troca_isto_por_uma_string_forte
-```
-
-Frontend:
-
-```bash
-nano /var/www/webfusionlab/frontend/.env.production
-```
-
-```
-NODE_ENV=production
-NEXT_PUBLIC_SITE_URL=https://webfusionlab.pt
-NEXT_PUBLIC_API_URL=https://api.webfusionlab.pt
-```
-
-## 6) Subir os containers (root compose)
-
-```bash
-cd /var/www/webfusionlab
-docker-compose up -d --build
-docker-compose ps
-```
-
-## 7) Configurar Nginx (host) para os dois dominios
-
-Criar o ficheiro:
-
-```bash
-sudo nano /etc/nginx/sites-available/webfusionlab
-```
-
-Cola o conteudo:
-
-```nginx
-server {
-    listen 80;
-    server_name webfusionlab.pt www.webfusionlab.pt;
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 80;
-    server_name api.webfusionlab.pt;
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name webfusionlab.pt www.webfusionlab.pt;
-
-    ssl_certificate /etc/letsencrypt/live/webfusionlab.pt/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/webfusionlab.pt/privkey.pem;
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-
-server {
-    listen 443 ssl http2;
-    server_name api.webfusionlab.pt;
-
-    ssl_certificate /etc/letsencrypt/live/api.webfusionlab.pt/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/api.webfusionlab.pt/privkey.pem;
-
-    location / {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-Ativar o site:
-
-```bash
-sudo ln -s /etc/nginx/sites-available/webfusionlab /etc/nginx/sites-enabled/webfusionlab
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-## 8) SSL com Certbot
-
-```bash
-sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d webfusionlab.pt -d www.webfusionlab.pt -d api.webfusionlab.pt
-```
-
-## 9) Testes rapidos
-
-```bash
-curl -I https://webfusionlab.pt
-curl -I https://api.webfusionlab.pt
-docker logs webfusionlab-frontend --tail=50
-docker logs webfusionlab-backend --tail=50
-```
-
-## 10) Atualizacoes futuras (deploy pelo repo)
-
-```bash
-cd /var/www/webfusionlab
-git pull origin main
-docker-compose up -d --build
-```
+- Atualiza periodicamente:
+  - imagem `postgres`;
+  - imagens base `node` e `nginx`;
+  - runner do GitHub Actions.
+- Monitoriza espaco em disco com especial atencao a:
+  - imagens Docker antigas;
+  - volumes;
+  - logs do runner.
+- Mantem backups do volume `postgres_data`.
+- Faz testes regulares de restore da base de dados.
+- Adiciona testes reais ao repo; neste momento o workflow executa `test --if-present`, porque ainda nao ha scripts de teste definidos.
