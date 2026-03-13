@@ -1,20 +1,21 @@
 # CI/CD de Producao com GitHub Actions + Self-Hosted Runner
 
-Este guia substitui o fluxo antigo baseado em `git pull` manual no servidor e Nginx no host. A partir daqui, o deploy de producao passa a acontecer localmente no servidor atraves de um `self-hosted runner`, sem SSH inbound para deploy teste1.
+Este guia substitui o fluxo antigo baseado em `git pull` manual no servidor e Nginx no host. A partir daqui, o deploy de producao passa a acontecer localmente no servidor atraves de um `self-hosted runner`, sem SSH inbound para deploy.
 
 ## 1. Estrategia de branches recomendada
 
 - `develop`: branch de trabalho diario.
-- `master`: branch de producao.
+- `main`: branch de producao neste repositorio.
+- `master`: mantida apenas como compatibilidade caso decidas renomear a branch de producao no futuro.
 - Trabalha sempre em `develop`.
-- Quando estiver pronto para publicar, abre um PR de `develop` para `master`.
-- O merge em `master` dispara automaticamente o workflow [`.github/workflows/production.yml`](./.github/workflows/production.yml).
-- Nao faças commits diretos em `master`; protege a branch para aceitar apenas merges via PR.
+- Quando estiver pronto para publicar, abre um PR de `develop` para `main`.
+- O merge em `main` dispara automaticamente o workflow [`.github/workflows/production.yml`](./.github/workflows/production.yml).
+- Nao faças commits diretos em `main`; protege a branch para aceitar apenas merges via PR.
 
 Fluxo recomendado:
 
 1. Desenvolver e validar em `develop`.
-2. Abrir PR `develop -> master`.
+2. Abrir PR `develop -> main`.
 3. Fazer merge.
 4. O runner self-hosted no servidor executa validacao, build e deploy local.
 
@@ -22,7 +23,7 @@ Fluxo recomendado:
 
 Arquitetura simples e robusta para um developer sozinho:
 
-- GitHub recebe o merge em `master`.
+- GitHub recebe o merge em `main`.
 - O GitHub Actions agenda o job no runner com labels `self-hosted`, `linux`, `production`.
 - O runner esta instalado no proprio servidor de producao, ou numa maquina interna com acesso ao Docker do servidor.
 - O job faz `checkout`, gera os ficheiros `.env.production`, valida o codigo, corre testes, faz build das imagens e executa `docker compose up -d`.
@@ -35,7 +36,7 @@ Arquitetura simples e robusta para um developer sozinho:
 Resumo da topologia:
 
 ```text
-GitHub (push em master)
+GitHub (push em main)
         |
         v
 GitHub Actions
@@ -58,15 +59,16 @@ Ficheiro: [`.github/workflows/production.yml`](./.github/workflows/production.ym
 
 O workflow faz:
 
-1. Trigger apenas em `push` para `master`.
-2. Execucao apenas no runner `self-hosted`, `linux`, `production`.
-3. Checkout do repositorio.
-4. Geracao local dos `.env.production` a partir de GitHub Secrets/Variables.
-5. Validacao de frontend e backend.
-6. Execucao de testes quando existirem.
-7. Build de frontend e backend.
-8. Build das imagens Docker.
-9. Deploy local via `docker compose up -d --remove-orphans --wait`.
+1. Trigger em `push` para `main` e `master`.
+2. Tambem pode ser executado manualmente via `workflow_dispatch`.
+3. Execucao apenas no runner `self-hosted`, `linux`, `production`.
+4. Checkout do repositorio.
+5. Geracao local dos `.env.production` a partir de GitHub Secrets/Variables.
+6. Validacao de frontend e backend.
+7. Execucao de testes quando existirem.
+8. Build de frontend e backend.
+9. Build das imagens Docker.
+10. Deploy local via `docker compose up -d --remove-orphans --wait`.
 
 ## 4. Docker Compose de producao
 
@@ -270,7 +272,7 @@ docker volume ls
 ## 11. Explicacao do fluxo completo de deploy
 
 1. Fazes merge de `develop` para `master`.
-2. O GitHub dispara o workflow de producao.
+2. O GitHub dispara o workflow de producao quando entra um novo commit em `main`.
 3. O job e enviado para o runner com labels `self-hosted`, `linux`, `production`.
 4. O runner executa localmente no servidor.
 5. O workflow faz `checkout` do monorepo.
