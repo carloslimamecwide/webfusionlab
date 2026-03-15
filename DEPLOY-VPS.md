@@ -64,13 +64,14 @@ O workflow faz:
 
 1. Trigger em `pull_request` para `main`.
 2. Corre em `ubuntu-latest`, separado do runner de producao.
-3. Usa os ficheiros `.env.production.example` para validar sem depender de segredos de producao.
-4. Checkout do repositorio.
-5. Validacao de frontend e backend.
-6. Execucao de testes quando existirem.
-7. Build de frontend e backend.
-8. Validacao de `docker compose config`.
-9. Build das imagens `nginx`, `frontend` e `backend`.
+3. Verifica se as `Variables` obrigatorias existem no Environment `production`.
+4. Usa os ficheiros `.env.production.example` para validar sem depender de segredos de producao.
+5. Checkout do repositorio.
+6. Validacao de frontend e backend.
+7. Execucao de testes quando existirem.
+8. Build de frontend e backend.
+9. Validacao de `docker compose config`.
+10. Build das imagens `nginx`, `frontend` e `backend`.
 
 Configuracao obrigatoria no GitHub:
 
@@ -166,7 +167,7 @@ Se mudares os dominios, adapta apenas o `server_name` em [`nginx/default.conf`](
 
 Usa o Environment `production` no GitHub e coloca la as seguintes configuracoes.
 
-Nao existem fallbacks no workflow de producao. Se faltar alguma variable, secret ou ficheiro de certificado, o job falha antes do deploy.
+O workflow de producao tem fallbacks para algumas `Variables`, mas isso nao substitui a configuracao real. O merge para `main` deve ser bloqueado pelo workflow de PR se faltar alguma `Variable` obrigatoria no Environment `production`.
 
 ### Variables
 
@@ -197,13 +198,13 @@ Nao existem fallbacks no workflow de producao. Se faltar alguma variable, secret
 - `PROD_SEED_ADMIN_PASSWORD=<senha_inicial_admin_ou_valor_aleatorio>`
   Apenas obrigatoria quando `PROD_SEED_ADMIN=true`.
 
-### Validacoes feitas pelo workflow antes do deploy
+### Validacoes feitas pelo workflow antes do merge e deploy
 
-- Todas as `Variables` obrigatorias existem no Environment `production`.
-- Todos os `Secrets` obrigatorios existem no Environment `production`.
-- `PROD_SEED_ADMIN` esta definido explicitamente como `true` ou `false`.
-- Se `PROD_SEED_ADMIN=true`, `PROD_SEED_ADMIN_EMAIL` e `PROD_SEED_ADMIN_PASSWORD` existem.
-- Os ficheiros `/origin.crt` e `/origin.key` existem dentro de `PROD_NGINX_CERTS_PATH`.
+- O workflow de PR valida que as `Variables` obrigatorias existem no Environment `production`.
+- O workflow de PR valida que `PROD_SEED_ADMIN` esta definido explicitamente como `true` ou `false`.
+- Se `PROD_SEED_ADMIN=true`, o workflow de PR valida `PROD_SEED_ADMIN_EMAIL`.
+- O workflow de producao valida os `Secrets` obrigatorios.
+- O workflow de producao valida que os ficheiros `/origin.crt` e `/origin.key` existem dentro de `NGINX_CERTS_PATH`.
 
 ### Resultado esperado destes valores
 

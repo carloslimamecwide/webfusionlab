@@ -7,6 +7,7 @@ on:
       - main
 
 permissions:
+  actions: read
   contents: read
 
 concurrency:
@@ -21,6 +22,71 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Validate production environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const environmentName = "production";
+            const requiredVariables = [
+              "PROD_COMPOSE_PROJECT_NAME",
+              "PROD_NGINX_HTTP_PORT",
+              "PROD_NGINX_HTTPS_PORT",
+              "PROD_NGINX_CERTS_PATH",
+              "PROD_FRONTEND_SITE_URL",
+              "PROD_FRONTEND_API_URL",
+              "PROD_DB_NAME",
+              "PROD_DB_USER",
+              "PROD_SMTP_HOST",
+              "PROD_SMTP_PORT",
+              "PROD_SENDER_EMAIL",
+              "PROD_SENDER_NAME",
+              "PROD_CONTACT_ADMIN_EMAIL",
+              "PROD_SEED_ADMIN",
+            ];
+
+            let response;
+            try {
+              response = await github.request(
+                "GET /repos/{owner}/{repo}/environments/{environment_name}/variables",
+                {
+                  owner,
+                  repo,
+                  environment_name: environmentName,
+                  per_page: 100,
+                },
+              );
+            } catch (error) {
+              core.setFailed(`Could not read environment variables for '${environmentName}': ${error.message}`);
+              return;
+            }
+
+            const variables = new Map(
+              response.data.variables.map((item) => [item.name, String(item.value ?? "").trim()]),
+            );
+
+            const missingVariables = requiredVariables.filter((name) => !variables.get(name));
+            if (missingVariables.length > 0) {
+              core.setFailed(
+                `Missing required production variables: ${missingVariables.join(", ")}`,
+              );
+              return;
+            }
+
+            const seedAdmin = variables.get("PROD_SEED_ADMIN");
+            if (seedAdmin !== "true" && seedAdmin !== "false") {
+              core.setFailed("PROD_SEED_ADMIN must be explicitly set to 'true' or 'false'.");
+              return;
+            }
+
+            if (seedAdmin === "true" && !variables.get("PROD_SEED_ADMIN_EMAIL")) {
+              core.setFailed("Missing required production variable: PROD_SEED_ADMIN_EMAIL");
+              return;
+            }
+
+            core.info("Production environment variables are present.");
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
