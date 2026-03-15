@@ -6,9 +6,10 @@ Este guia substitui o fluxo antigo baseado em `git pull` manual no servidor e Ng
 
 - `develop`: branch de trabalho diario.
 - `main`: branch de producao neste repositorio.
-- `master`: mantida apenas como compatibilidade caso decidas renomear a branch de producao no futuro.
 - Trabalha sempre em `develop`.
 - Quando estiver pronto para publicar, abre um PR de `develop` para `main`.
+- O PR para `main` corre primeiro o workflow [`.github/workflows/pr-validation.yml`](./.github/workflows/pr-validation.yml).
+- Se a validacao falhar, o PR nao deve ser merged.
 - O merge em `main` dispara automaticamente o workflow [`.github/workflows/production.yml`](./.github/workflows/production.yml).
 - Nao faças commits diretos em `main`; protege a branch para aceitar apenas merges via PR.
 
@@ -55,13 +56,40 @@ docker compose up -d --build
         +--> postgres (interno)
 ```
 
-## 3. Workflow de producao
+## 3. Workflow de validacao de PR
+
+Ficheiro: [`.github/workflows/pr-validation.yml`](./.github/workflows/pr-validation.yml)
+
+O workflow faz:
+
+1. Trigger em `pull_request` para `main`.
+2. Corre em `ubuntu-latest`, separado do runner de producao.
+3. Usa os ficheiros `.env.production.example` para validar sem depender de segredos de producao.
+4. Checkout do repositorio.
+5. Validacao de frontend e backend.
+6. Execucao de testes quando existirem.
+7. Build de frontend e backend.
+8. Validacao de `docker compose config`.
+9. Build das imagens `nginx`, `frontend` e `backend`.
+
+Configuracao obrigatoria no GitHub:
+
+1. `Settings -> Branches -> Add rule` para `main`.
+2. Ativar `Require a pull request before merging`.
+3. Ativar `Require status checks to pass before merging`.
+4. Ativar `Require branches to be up to date before merging`.
+5. Selecionar o check `Validate Pull Request`.
+6. Opcional mas recomendado: ativar `Do not allow bypassing the above settings`.
+
+Sem este branch protection, o workflow valida o PR, mas o GitHub continua a permitir merge manual.
+
+## 4. Workflow de producao
 
 Ficheiro: [`.github/workflows/production.yml`](./.github/workflows/production.yml)
 
 O workflow faz:
 
-1. Trigger em `push` para `main` e `master`.
+1. Trigger em `push` para `main`.
 2. Tambem pode ser executado manualmente via `workflow_dispatch`.
 3. Execucao apenas no runner `self-hosted`, `linux`, `production`.
 4. Checkout do repositorio.
@@ -72,7 +100,7 @@ O workflow faz:
 9. Build das imagens Docker.
 10. Deploy local via `docker compose up -d --remove-orphans --wait`.
 
-## 4. Docker Compose de producao
+## 5. Docker Compose de producao
 
 Ficheiro: [`docker-compose.yml`](./docker-compose.yml)
 
@@ -91,7 +119,7 @@ Notas:
 - `443` serve trafego HTTPS publico.
 - Foram adicionados `healthchecks` para suportar `docker compose up --wait`.
 
-## 5. Dockerfile do frontend
+## 6. Dockerfile do frontend
 
 Ficheiro: [`frontend/Dockerfile`](./frontend/Dockerfile)
 
@@ -104,7 +132,7 @@ Boas praticas aplicadas:
 - `HEALTHCHECK`;
 - `NEXT_TELEMETRY_DISABLED=1`.
 
-## 6. Dockerfile do backend
+## 7. Dockerfile do backend
 
 Ficheiro: [`backend/Dockerfile`](./backend/Dockerfile)
 
@@ -116,7 +144,7 @@ Boas praticas aplicadas:
 - utilizador nao-root;
 - `HEALTHCHECK`.
 
-## 7. Configuracao do Nginx
+## 8. Configuracao do Nginx
 
 Ficheiros:
 
@@ -134,9 +162,11 @@ O `nginx` corre num container dedicado e faz:
 
 Se mudares os dominios, adapta apenas o `server_name` em [`nginx/default.conf`](./nginx/default.conf) e as variaveis publicas do frontend.
 
-## 8. Secrets e variables necessarios
+## 9. Secrets e variables necessarios
 
 Usa o Environment `production` no GitHub e coloca la as seguintes configuracoes.
+
+Nao existem fallbacks no workflow de producao. Se faltar alguma variable, secret ou ficheiro de certificado, o job falha antes do deploy.
 
 ### Variables
 
@@ -155,6 +185,7 @@ Usa o Environment `production` no GitHub e coloca la as seguintes configuracoes.
 - `PROD_CONTACT_ADMIN_EMAIL=admin@webfusionlab.pt`
 - `PROD_SEED_ADMIN=false`
 - `PROD_SEED_ADMIN_EMAIL=admin@webfusionlab.pt`
+  Apenas obrigatoria quando `PROD_SEED_ADMIN=true`.
 
 ### Secrets
 
@@ -164,6 +195,15 @@ Usa o Environment `production` no GitHub e coloca la as seguintes configuracoes.
 - `PROD_JWT_SECRET=<segredo_longo_e_aleatorio>`
 - `PROD_ADMIN_REGISTRATION_TOKEN=<token_longo_e_aleatorio>`
 - `PROD_SEED_ADMIN_PASSWORD=<senha_inicial_admin_ou_valor_aleatorio>`
+  Apenas obrigatoria quando `PROD_SEED_ADMIN=true`.
+
+### Validacoes feitas pelo workflow antes do deploy
+
+- Todas as `Variables` obrigatorias existem no Environment `production`.
+- Todos os `Secrets` obrigatorios existem no Environment `production`.
+- `PROD_SEED_ADMIN` esta definido explicitamente como `true` ou `false`.
+- Se `PROD_SEED_ADMIN=true`, `PROD_SEED_ADMIN_EMAIL` e `PROD_SEED_ADMIN_PASSWORD` existem.
+- Os ficheiros `/origin.crt` e `/origin.key` existem dentro de `PROD_NGINX_CERTS_PATH`.
 
 ### Resultado esperado destes valores
 
@@ -216,7 +256,7 @@ Ficheiros de exemplo no repo:
 - [`frontend/.env.production.example`](./frontend/.env.production.example)
 - [`backend/.env.production.example`](./backend/.env.production.example)
 
-## 9. Passos para instalar e registar o self-hosted runner
+## 10. Passos para instalar e registar o self-hosted runner
 
 Assume Ubuntu/Debian e um utilizador dedicado `deploy`.
 
@@ -276,7 +316,7 @@ sudo ./svc.sh start
 sudo ./svc.sh status
 ```
 
-## 10. Comandos necessarios no servidor
+## 11. Comandos necessarios no servidor
 
 Instalacao base:
 
@@ -308,7 +348,7 @@ docker image ls
 docker volume ls
 ```
 
-## 11. Explicacao do fluxo completo de deploy
+## 12. Explicacao do fluxo completo de deploy
 
 1. Fazes merge de `develop` para `main`.
 2. O GitHub dispara o workflow de producao quando entra um novo commit em `main`.
@@ -328,7 +368,7 @@ docker volume ls
 13. O `docker compose up -d --remove-orphans --wait` atualiza os containers em producao.
 14. O Nginx continua a ser a unica porta publica e encaminha para frontend/backend internos.
 
-## 12. Sugestoes de seguranca e manutencao
+## 13. Sugestoes de seguranca e manutencao
 
 ### Seguranca
 
