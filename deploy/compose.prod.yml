@@ -1,0 +1,86 @@
+name: webfusionlab
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: webfusionlab_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - webfusionlab_pgdata:/var/lib/postgresql/data
+    networks:
+      - webfusionlab_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  backend:
+    image: ghcr.io/carloslimamecwide/webfusionlab-backend:${IMAGE_TAG:-latest}
+    container_name: webfusionlab_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      TRUST_PROXY: "true"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: ${DB_USER}
+      DB_NAME: ${DB_NAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - webfusionlab_net
+    # Sem expose de porta — acesso apenas via nginx na rede interna
+
+  frontend:
+    image: ghcr.io/carloslimamecwide/webfusionlab-frontend:${IMAGE_TAG:-latest}
+    container_name: webfusionlab_frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+    depends_on:
+      - backend
+    networks:
+      - webfusionlab_net
+    # Sem expose de porta — acesso apenas via nginx na rede interna
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: webfusionlab_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/app.conf:/etc/nginx/conf.d/default.conf:ro
+      # Certificados Let's Encrypt obtidos no host antes do primeiro deploy
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - webfusionlab_net
+
+networks:
+  webfusionlab_net:
+    name: webfusionlab_net
+
+volumes:
+  webfusionlab_pgdata:
+    name: webfusionlab_pgdata
