@@ -1,55 +1,26 @@
-"use client";
-
-import AnimatedSection from "@/components/sections/AnimatedSection";
 import PageHero from "@/components/sections/PageHero";
+import ServiceCard from "@/components/sections/ServiceCard";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
-import Badge from "@/components/ui/Badge";
-import ServiceCard from "@/components/sections/ServiceCard";
-import ProcessStep from "@/components/sections/ProcessStep";
 import { services } from "@/data/services";
 
 const processSteps = [
   {
     step: "01",
-    title: "Descoberta",
-    description: "Entendemos objetivos, público e restrições técnicas.",
-    icon: "🔍",
+    title: "Diagnostico",
+    description: "Alinhamos objetivo, publico e o que faz realmente falta.",
   },
   {
     step: "02",
-    title: "Design",
-    description: "Fluxos, UX e UI alinhados com conversão.",
-    icon: "🎨",
+    title: "Proposta",
+    description: "Recebes uma solucao curta, com prioridades e escopo claro.",
   },
   {
     step: "03",
-    title: "Desenvolvimento",
-    description: "Implementação rápida, testes e performance.",
-    icon: "⚡",
+    title: "Execucao",
+    description: "Desenho, desenvolvimento e entrega sem excesso de camadas.",
   },
-  {
-    step: "04",
-    title: "Lançamento",
-    description: "Deploy seguro, monitorização e iteração.",
-    icon: "🚀",
-  },
-];
-
-const stack = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "Node.js",
-  "PostgreSQL",
-  "MongoDB",
-  "React Native",
-  "Flutter",
-  "AWS",
-  "Docker",
-  "OpenAI",
-  "Stripe",
 ];
 
 export default function ServicesPage() {
@@ -59,50 +30,17 @@ export default function ServicesPage() {
         eyebrow="Servicos"
         title={
           <>
-            Equipas digitais completas,
-            <span className="block text-[color:var(--accent)]">do conceito ao lancamento.</span>
+            Servicos digitais
+            <span className="block text-[color:var(--accent)]">diretos ao ponto.</span>
           </>
         }
-        description="Estrategia, design e desenvolvimento com foco em resultados mensuraveis."
-        meta={["Squad modular", "Portugal", "Remote"]}
-        tags={["Estrategia", "Design", "Engenharia", "Growth"]}
-        stats={[
-          { label: "Tempo medio", value: "6-8 semanas", note: "Roadmap validado" },
-          { label: "Ritmo", value: "2 sprints/mes", note: "QA continuo" },
-          { label: "SLA", value: "2h resposta", note: "Canal dedicado" },
-        ]}
-        right={
-          <>
-            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
-                <span>Pacotes</span>
-                <span className="text-[color:var(--accent)]">Live</span>
-              </div>
-              <div className="mt-6 space-y-4 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-[color:var(--muted)]">Sprint 1</span>
-                  <span className="text-[color:var(--foreground)]">Descoberta + UX</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[color:var(--muted)]">Sprint 2</span>
-                  <span className="text-[color:var(--foreground)]">UI + Prototype</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[color:var(--muted)]">Sprints 3+</span>
-                  <span className="text-[color:var(--foreground)]">Build + Growth</span>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
-              <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Stack</div>
-              <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                Moderna, sem hype
-              </div>
-              <p className="mt-2 text-sm text-[color:var(--muted)]">
-                Ferramentas escolhidas pela velocidade e escala.
-              </p>
-            </div>
-          </>
+        description="Websites, apps e automacao para negocios que precisam de algo funcional, rapido e facil de manter."
+        meta={["Portugal", "Remote"]}
+        tags={["Websites", "Apps", "Web Apps", "Automacao"]}
+        actions={
+          <Button href="/contact" variant="primary">
+            Pedir proposta
+          </Button>
         }
       />
 
@@ -111,74 +49,54 @@ export default function ServicesPage() {
           <SectionHeading
             align="left"
             eyebrow="Servicos"
-            title="Tudo o que precisas para construir, lancar e escalar."
-            subtitle="Equipas flexiveis, com especialistas senior em cada etapa."
+            title="Escolhe apenas o que faz sentido para o teu projeto."
+            subtitle="Cada servico existe para resolver um problema concreto, sem encher o processo com extras."
             className="mb-12"
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {services.map((service, index) => (
-              <AnimatedSection key={service.id} delay={index * 0.08}>
-                <ServiceCard service={service} showFeatures />
-              </AnimatedSection>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            {services.map((service) => (
+              <ServiceCard key={service.id} service={service} showFeatures />
             ))}
           </div>
         </div>
       </section>
 
-      <AnimatedSection className="relative py-20">
+      <section className="relative py-10">
         <div className="mx-auto max-w-6xl px-6 lg:px-10">
           <SectionHeading
             align="left"
-            eyebrow="Metodo"
-            title="Processo claro e eficiente."
-            subtitle="Quatro passos para manter qualidade e previsibilidade."
-            className="mb-12"
+            eyebrow="Processo"
+            title="Uma forma simples de trabalhar."
+            subtitle="O objetivo e reduzir duvidas, encurtar decisoes e chegar mais depressa ao que interessa."
+            className="mb-10"
           />
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {processSteps.map((step, index) => (
-              <AnimatedSection key={step.step} delay={index * 0.1}>
-                <ProcessStep {...step} />
-              </AnimatedSection>
+          <div className="grid gap-6 md:grid-cols-3">
+            {processSteps.map((step) => (
+              <Card key={step.step}>
+                <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--accent)]">{step.step}</div>
+                <div className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  {step.title}
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-[color:var(--muted)]">{step.description}</p>
+              </Card>
             ))}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
-      <AnimatedSection className="relative py-20">
-        <div className="mx-auto max-w-5xl px-6 lg:px-10">
-          <Card className="bg-[color:var(--surface)]">
-            <SectionHeading
-              align="left"
-              eyebrow="Stack"
-              title="Stack moderna, sem excesso"
-              subtitle="Escolhemos tecnologia pelo impacto, nao pelo hype."
-              size="md"
-              className="mb-8"
-            />
-            <div className="flex flex-wrap gap-3">
-              {stack.map((tech) => (
-                <Badge key={tech} variant="outline">
-                  {tech}
-                </Badge>
-              ))}
-            </div>
-          </Card>
-        </div>
-      </AnimatedSection>
-
-      <AnimatedSection className="relative py-20">
+      <section className="relative py-20">
         <div className="mx-auto max-w-4xl px-6 lg:px-10">
           <Card className="bg-[color:var(--surface)] text-center">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-4">Vamos falar do teu projeto?</h2>
-            <p className="text-[color:var(--muted)] mb-8 max-w-2xl mx-auto">
-              Diz-nos o que precisas e respondemos com um plano simples e transparente.
+            <h2 className="mb-4 text-3xl font-semibold md:text-4xl">Vamos ver o que faz sentido para o teu caso?</h2>
+            <p className="mx-auto mb-8 max-w-2xl text-[color:var(--muted)]">
+              Partilha o contexto do projeto e respondo com um plano simples, sem proposta inflacionada.
             </p>
             <Button href="/contact" variant="primary">
               Contactar
             </Button>
           </Card>
         </div>
-      </AnimatedSection>
+      </section>
     </div>
   );
 }

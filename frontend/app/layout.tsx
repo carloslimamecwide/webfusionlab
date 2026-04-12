@@ -18,10 +18,10 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "WebFusionLab - Desenvolvimento Web, Apps & Marketing Digital",
+  title: "WebFusionLab | Websites, Apps e Automacao",
   description:
-    "Produtos digitais com foco em performance e escala. Desenvolvimento web, apps mobile, marketing digital e automação com AI em Portugal.",
-  keywords: ["desenvolvimento web", "apps mobile", "marketing digital", "AI", "Portugal"],
+    "Websites, apps e automacao para negocios que precisam de uma presenca digital mais clara, rapida e focada em resultados.",
+  keywords: ["desenvolvimento web", "apps mobile", "automacao", "websites", "Portugal"],
 };
 
 export default function RootLayout({
