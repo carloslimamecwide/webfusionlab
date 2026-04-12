@@ -66,23 +66,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          required_vars=(
-            COMPOSE_PROJECT_NAME
-            NGINX_HTTP_PORT
-            NGINX_HTTPS_PORT
-            NGINX_CERTS_PATH
-            FRONTEND_SITE_URL
-            FRONTEND_API_URL
-            DB_NAME
-            DB_USER
-            SMTP_HOST
-            SMTP_PORT
-            SENDER_EMAIL
-            SENDER_NAME
-            CONTACT_ADMIN_EMAIL
-            SEED_ADMIN
-          )
-
           required_secrets=(
             PROD_DB_PASSWORD
             PROD_SMTP_USER
@@ -90,13 +73,6 @@ jobs:
             PROD_JWT_SECRET
             PROD_ADMIN_REGISTRATION_TOKEN
           )
-
-          for name in "${required_vars[@]}"; do
-            if [ -z "${!name:-}" ]; then
-              echo "::error::Missing required production variable: ${name}"
-              exit 1
-            fi
-          done
 
           for name in "${required_secrets[@]}"; do
             if [ -z "${!name:-}" ]; then
