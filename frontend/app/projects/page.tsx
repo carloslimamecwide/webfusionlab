@@ -1,93 +1,44 @@
-"use client";
-
-import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import AnimatedSection from "@/components/sections/AnimatedSection";
 import PageHero from "@/components/sections/PageHero";
 import ProjectCard from "@/components/sections/ProjectCard";
-import SectionHeading from "@/components/ui/SectionHeading";
-import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
-const categories = ["Todos", "Web", "Mobile", "Marketing", "AI"];
-
-type Category = "Web" | "Mobile" | "Marketing" | "AI";
+import Card from "@/components/ui/Card";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { projects as fallbackProjects } from "@/data/projects";
 
 interface ProjectRecord {
   id: string;
   title: string;
   description: string;
-  category: Category;
+  category: "Web" | "Mobile" | "Marketing" | "AI";
   year: string;
   stack: string[];
   image?: string | null;
+  slug?: string;
   link?: string | null;
-  created_at?: string;
-  updated_at?: string;
 }
 
-const caseMix = [
-  { label: "SaaS", value: "14" },
-  { label: "E-commerce", value: "09" },
-  { label: "Health", value: "06" },
-  { label: "Fintech", value: "04" },
-];
+async function getProjects(): Promise<ProjectRecord[]> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export default function ProjectsPage() {
-  const [activeCategory, setActiveCategory] = useState("Todos");
-  const [projects, setProjects] = useState<ProjectRecord[]>([]);
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  if (!apiUrl) {
+    return fallbackProjects;
+  }
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchProjects = async () => {
-      if (!API_URL) {
-        setStatus("error");
-        return;
-      }
-      setStatus("loading");
-      try {
-        const response = await fetch(`${API_URL}/api/public/projects`);
-        if (!response.ok) {
-          throw new Error("Erro ao carregar projetos.");
-        }
-        const data = (await response.json()) as ProjectRecord[];
-        if (!isMounted) {
-          return;
-        }
-        setProjects(data);
-        setStatus("idle");
-      } catch (error) {
-        if (!isMounted) {
-          return;
-        }
-        setStatus("error");
-      }
-    };
-
-    void fetchProjects();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const filteredProjects = useMemo(() => {
-    if (activeCategory === "Todos") {
-      return projects;
+  try {
+    const response = await fetch(`${apiUrl}/api/public/projects`, { cache: "no-store" });
+    if (!response.ok) {
+      return fallbackProjects;
     }
-    return projects.filter((project) => project.category === activeCategory);
-  }, [activeCategory, projects]);
 
-  const heroStats = useMemo(() => {
-    return [
-      { label: "Projetos", value: `${projects.length}`, note: "2019-2024" },
-      { label: "Categorias", value: `${categories.length - 1}`, note: "Web + Mobile" },
-      { label: "Impacto", value: "+27% retencao", note: "Media clientes" },
-    ];
-  }, [projects.length]);
+    const data = (await response.json()) as ProjectRecord[];
+    return data.length > 0 ? data : fallbackProjects;
+  } catch {
+    return fallbackProjects;
+  }
+}
+
+export default async function ProjectsPage() {
+  const projects = await getProjects();
 
   return (
     <div className="relative">
@@ -95,119 +46,43 @@ export default function ProjectsPage() {
         eyebrow="Projetos"
         title={
           <>
-            Trabalho real,
-            <span className="block text-[color:var(--accent)]">resultados claros.</span>
+            Projetos escolhidos
+            <span className="block text-[color:var(--accent)]">para mostrar o tipo de trabalho.</span>
           </>
         }
-        description="Seleciona uma categoria e ve como resolvemos desafios em web, mobile, marketing e AI."
-        meta={["Portfolio vivo", "Portugal + EU", "2019-2024"]}
-        tags={["SaaS", "E-commerce", "Health", "Fintech"]}
-        stats={heroStats}
-        right={
-          <>
-            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 shadow-[var(--shadow-strong)]">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
-                <span>Case mix</span>
-                <span className="text-[color:var(--accent)]">Live</span>
-              </div>
-              <div className="mt-6 space-y-3">
-                {caseMix.map((item) => (
-                  <div key={item.label} className="flex items-center justify-between text-sm">
-                    <span className="text-[color:var(--muted)]">{item.label}</span>
-                    <span className="text-lg font-medium tracking-tight text-[color:var(--foreground)]">{item.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
-              <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--muted)]">Selecao</div>
-              <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                Casos com pressao real
-              </div>
-              <p className="mt-2 text-sm text-[color:var(--muted)]">Projetos de crescimento, produto e rebrand.</p>
-            </div>
-          </>
+        description="Uma selecao curta para mostrar como penso produto, execucao e clareza visual."
+        meta={["Portugal", "Remote"]}
+        stats={[{ label: "Projetos", value: `${projects.length}`, note: "Portfolio selecionado" }]}
+        actions={
+          <Button href="/contact" variant="primary">
+            Falar sobre um projeto
+          </Button>
         }
       />
 
-      <section className="relative pb-12">
+      <section className="relative pb-20">
         <div className="mx-auto max-w-6xl px-6 lg:px-10">
           <SectionHeading
             align="left"
-            eyebrow="Filtro"
-            title="Explora por categoria."
-            subtitle="Agrupamos por tipo de produto para facilitar a leitura."
-            className="mb-8"
+            eyebrow="Portfolio"
+            title="Menos quantidade, mais contexto."
+            subtitle="Em vez de dezenas de cards, a pagina mostra apenas projetos suficientes para perceber o tipo de entrega."
+            className="mb-10"
           />
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-wrap gap-3"
-          >
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                type="button"
-                aria-pressed={activeCategory === category}
-                className={`
-                  px-5 py-2 rounded-full text-sm font-medium tracking-[0.12em] transition-all duration-300 border
-                  ${
-                    activeCategory === category
-                      ? "bg-[color:var(--accent)] text-[color:var(--background)] border-transparent"
-                      : "bg-transparent text-[color:var(--muted)] hover:text-[color:var(--foreground)] border-[color:var(--border)]"
-                  }
-                `}
-              >
-                {category}
-              </button>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} showYear stackLimit={3} />
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      <section className="relative pb-20">
-        <div className="mx-auto max-w-6xl px-6 lg:px-10">
-          {status === "loading" ? (
-            <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-6 text-sm text-[color:var(--muted)]">
-              A carregar projetos...
-            </div>
-          ) : null}
-          {status === "error" ? (
-            <div className="rounded-2xl border border-red-400/40 bg-red-500/15 p-6 text-sm text-red-200">
-              Nao foi possivel carregar os projetos. Confirma `NEXT_PUBLIC_API_URL`.
-            </div>
-          ) : null}
-          <motion.div layout className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-              >
-                <ProjectCard project={project} showYear />
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {status === "idle" && filteredProjects.length === 0 ? (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
-              <p className="text-[color:var(--muted)]">Nenhum projeto encontrado nesta categoria.</p>
-            </motion.div>
-          ) : null}
-        </div>
-      </section>
-
-      <AnimatedSection className="relative py-20">
+      <section className="relative py-20">
         <div className="mx-auto max-w-4xl px-6 lg:px-10">
           <Card className="bg-[color:var(--surface)] text-center">
             <SectionHeading
-              title="Queres um projeto semelhante?"
-              subtitle="Partilha o teu objetivo e respondemos com uma proposta clara."
+              title="Queres algo semelhante?"
+              subtitle="Partilha o objetivo do projeto e envio uma resposta curta com o melhor caminho."
               size="md"
               className="mb-8"
             />
@@ -216,7 +91,7 @@ export default function ProjectsPage() {
             </Button>
           </Card>
         </div>
-      </AnimatedSection>
+      </section>
     </div>
   );
 }
