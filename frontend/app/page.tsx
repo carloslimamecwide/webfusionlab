@@ -7,7 +7,7 @@ import { projects } from "@/data/projects";
 import { services } from "@/data/services";
 
 const quickFacts = [
-  { label: "Foco", value: "Clareza e conversao" },
+  { label: "foco teste", value: "Clareza e conversao" },
   { label: "Formato", value: "Portugal / Remote" },
   { label: "Entrega", value: "Proposta simples" },
 ];
