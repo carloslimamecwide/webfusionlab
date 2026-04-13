@@ -16,9 +16,9 @@ jobs:
     name: Build Backend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: npm
@@ -36,9 +36,9 @@ jobs:
     name: Build Frontend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: npm
@@ -51,7 +51,7 @@ jobs:
       - name: Build Next.js
         working-directory: frontend
         env:
-          NEXT_PUBLIC_API_URL: ${{ vars.PROD_FRONTEND_API_URL || vars.NEXT_PUBLIC_API_URL || 'https://api.webfusionlab.pt' }}
+          NEXT_PUBLIC_API_URL: ${{ vars.PROD_FRONTEND_API_URL }}
         run: npm run build
 
   publish-images:
@@ -65,7 +65,7 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -100,7 +100,7 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           build-args: |
-            NEXT_PUBLIC_API_URL=${{ vars.PROD_FRONTEND_API_URL || vars.NEXT_PUBLIC_API_URL || 'https://api.webfusionlab.pt' }}
+            NEXT_PUBLIC_API_URL=${{ vars.PROD_FRONTEND_API_URL }}
           tags: |
             ghcr.io/${{ env.OWNER }}/webfusionlab-frontend:${{ steps.tag.outputs.sha }}
             ghcr.io/${{ env.OWNER }}/webfusionlab-frontend:latest
